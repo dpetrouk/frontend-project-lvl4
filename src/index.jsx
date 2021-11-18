@@ -7,7 +7,7 @@ import '../assets/application.scss';
 
 import ReactDOM from 'react-dom';
 import React from 'react';
-import App from './App.jsx';
+import App from './components/App.jsx';
 
 if (process.env.NODE_ENV !== 'production') {
   localStorage.debug = 'chat:*';
@@ -20,4 +20,4 @@ ReactDOM.render(
   container,
 );
 
-console.log('it works!');
+console.log('After rendering in index.jsx');
