@@ -24,6 +24,7 @@ module.exports = {
   plugins: [
     new MiniCssExtractPlugin(),
   ],
+  devtool: 'source-map',
   module: {
     rules: [
       {
@@ -39,6 +40,11 @@ module.exports = {
           { loader: 'postcss-loader' },
           { loader: 'sass-loader' },
         ],
+      },
+      {
+        test: /\.js$/,
+        enforce: 'pre',
+        use: ['source-map-loader'],
       },
     ],
   },
