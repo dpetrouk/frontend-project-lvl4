@@ -7,7 +7,10 @@ import '../assets/application.scss';
 
 import ReactDOM from 'react-dom';
 import React from 'react';
+import { Provider } from 'react-redux';
+
 import App from './components/App.jsx';
+import store from './slices/index.js';
 
 if (process.env.NODE_ENV !== 'production') {
   localStorage.debug = 'chat:*';
@@ -16,7 +19,9 @@ if (process.env.NODE_ENV !== 'production') {
 const container = document.querySelector('#chat');
 
 ReactDOM.render(
-  <App />,
+  <Provider store={store}>
+    <App />
+  </Provider>,
   container,
 );
 

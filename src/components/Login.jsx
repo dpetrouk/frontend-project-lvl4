@@ -14,7 +14,6 @@ const validationSchema = yup.object().shape({
 });
 
 const Login = () => {
-  console.log('Login');
   const auth = useAuth();
   const history = useHistory();
   const [authFailed, setAuthFailed] = useState(false);
@@ -38,7 +37,7 @@ const Login = () => {
         const { token, username } = response.data;
         console.log(token, username);
         localStorage.setItem('user', JSON.stringify({ token, username }));
-        auth.logIn();
+        auth.logIn(token);
         history.push('/');
       } catch (error) {
         if (error.isAxiosError) {
