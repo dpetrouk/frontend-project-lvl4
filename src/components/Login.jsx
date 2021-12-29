@@ -37,7 +37,7 @@ const Login = () => {
         const { token, username } = response.data;
         console.log(token, username);
         localStorage.setItem('user', JSON.stringify({ token, username }));
-        auth.logIn(token);
+        auth.logIn(token, username);
         history.push('/');
       } catch (error) {
         if (error.isAxiosError) {
