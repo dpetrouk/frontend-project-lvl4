@@ -15,12 +15,10 @@ export const messagesSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchData.pending, (state) => {
-        console.log('Pending');
-      })
       .addCase(fetchData.fulfilled, (state, action) => {
         messagesAdapter.setAll(state, action.payload.messages);
-      }).addCase(fetchData.rejected, (state) => {
+      })
+      .addCase(fetchData.rejected, () => {
         console.log('Rejected');
       });
   },

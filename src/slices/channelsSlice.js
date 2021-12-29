@@ -15,12 +15,10 @@ export const channelsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchData.pending, (state) => {
-        console.log('Pending');
-      })
       .addCase(fetchData.fulfilled, (state, action) => {
         channelsAdapter.setAll(state, action.payload.channels);
-      }).addCase(fetchData.rejected, (state) => {
+      })
+      .addCase(fetchData.rejected, () => {
         console.log('Rejected');
       });
   },
