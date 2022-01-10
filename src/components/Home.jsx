@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { io } from 'socket.io-client';
 
 import useAuth from '../hooks/index.jsx';
 import { addChannel, channelsSelectors } from '../slices/channelsSlice.js';
 import { addMessage, messagesSelectors } from '../slices/messagesSlice.js';
 import fetchData from '../slices/fetchData.js';
+import socket from '../socket.js';
 
 const renderChannels = (channels) => channels.map(({ id, name }) => (
   <li key={id}>{name}</li>
@@ -24,22 +24,22 @@ const Home = () => {
   const dispatch = useDispatch();
   const { token, username } = useAuth();
   const [message, setMessage] = useState('');
-  const socketRef = useRef(null);
+  // const socketRef = useRef(null);
 
   useEffect(() => {
     const dispatchFetchData = () => dispatch(fetchData(token));
     dispatchFetchData();
-    socketRef.current = io('ws://localhost:5000'); // ?
-    socketRef.current.on('connect', () => {
+    // socketRef.current = io('ws://localhost:5000');
+    socket.on('connect', () => {
       console.log('socket: connect');
     });
-    socketRef.current.on('newMessage', () => {
+    socket.on('newMessage', () => {
       dispatchFetchData();
       setMessage('');
     });
-    socketRef.current.on('newChannel', dispatchFetchData);
-    socketRef.current.on('removeChannel', dispatchFetchData);
-    socketRef.current.on('renameChannel', dispatchFetchData);
+    socket.on('newChannel', dispatchFetchData);
+    socket.on('removeChannel', dispatchFetchData);
+    socket.on('renameChannel', dispatchFetchData);
   }, []);
 
   const channels = useSelector(channelsSelectors.selectAll);
@@ -50,7 +50,7 @@ const Home = () => {
 
   const sendMessage = (e) => {
     e.preventDefault();
-    socketRef.current.emit('newMessage', { username, body: message });
+    socket.emit('newMessage', { username, body: message });
   };
 
   return (
