@@ -1,11 +1,13 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { io } from 'socket.io-client';
 
 import useAuth from '../hooks/index.jsx';
 import { addChannel, channelsSelectors } from '../slices/channelsSlice.js';
 import { addMessage, messagesSelectors } from '../slices/messagesSlice.js';
 import fetchData from '../slices/fetchData.js';
-import socket from '../socket.js';
+
+const socket = io();
 
 const renderChannels = (channels) => channels.map(({ id, name }) => (
   <li key={id}>{name}</li>
