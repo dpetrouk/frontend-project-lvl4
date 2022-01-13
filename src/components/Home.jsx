@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { io } from 'socket.io-client';
 
@@ -26,12 +26,10 @@ const Home = () => {
   const dispatch = useDispatch();
   const { token, username } = useAuth();
   const [message, setMessage] = useState('');
-  // const socketRef = useRef(null);
 
   useEffect(() => {
     const dispatchFetchData = () => dispatch(fetchData(token));
     dispatchFetchData();
-    // socketRef.current = io('ws://localhost:5000');
     socket.on('connect', () => {
       console.log('socket: connect');
     });
@@ -74,7 +72,7 @@ const Home = () => {
                 onChange={handleMessageInput}
                 value={message}
               />
-              <button>Send</button>
+              <button type="submit">Send</button>
             </form>
           </div>
         </div>
