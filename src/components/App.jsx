@@ -3,10 +3,9 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link,
   Redirect,
 } from 'react-router-dom';
-import { Nav, Button } from 'react-bootstrap';
+import { Container, Navbar, Button } from 'react-bootstrap';
 
 import authContext from '../contexts/index.jsx';
 import useAuth from '../hooks/index.jsx';
@@ -76,9 +75,10 @@ const PrivateRoute = ({ children, path }) => {
 
 const AuthButton = () => {
   const auth = useAuth();
-  return auth.loggedIn
-    ? <Button onClick={auth.logOut}>Выйти</Button>
-    : <Button as={Link} to="/login">Войти</Button>;
+  if (!auth.loggedIn) {
+    return null;
+  }
+  return <Button variant="outline-secondary" onClick={auth.logOut}>Выйти</Button>;
 };
 
 const App = () => {
@@ -87,11 +87,13 @@ const App = () => {
   return (
     <AuthProvider>
       <Router>
-        <div>
-          <Nav>
-            <Nav.Link as={Link} to="/">Home</Nav.Link>
-            <AuthButton />
-          </Nav>
+        <div className="d-flex flex-column h-100">
+          <Navbar className="bg-white shadow-sm">
+            <Container>
+              <Navbar.Brand href="/">Чат</Navbar.Brand>
+              <AuthButton />
+            </Container>
+          </Navbar>
           <Switch>
             <Route path="/login">
               <LoginVerification />

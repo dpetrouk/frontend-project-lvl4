@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Form, Button } from 'react-bootstrap';
+import {
+  Container, Row, Col, Card, Form, Button,
+} from 'react-bootstrap';
 import { useFormik } from 'formik';
 import axios from 'axios';
 import * as yup from 'yup';
@@ -48,44 +50,55 @@ const Login = () => {
   });
 
   return (
-    <div>
-      <h2>Login</h2>
-      <Form noValidate onSubmit={formik.handleSubmit} className="col-md-6 mt-3 mb-0">
-        <Form.Group className="form-floating mb-3">
-          <Form.Control
-            autoComplete="username"
-            id="username"
-            name="username"
-            required
-            isInvalid={authFailed}
-            onChange={formik.handleChange}
-            value={formik.values.username}
-            placeholder="Имя пользователя"
-          />
-          <Form.Label>
-            Имя пользователя
-          </Form.Label>
-        </Form.Group>
-        <Form.Group className="form-floating mb-3">
-          <Form.Control
-            autoComplete="password"
-            id="password"
-            name="password"
-            type="password"
-            required
-            isInvalid={authFailed}
-            onChange={formik.handleChange}
-            value={formik.values.password}
-            placeholder="Пароль"
-          />
-          <Form.Label>
-            Пароль
-          </Form.Label>
-          <Form.Control.Feedback type="invalid" className="invalid-tooltip">Неверное имя пользователя или пароль</Form.Control.Feedback>
-        </Form.Group>
-        <Button variant="outline-primary" type="submit">Войти</Button>
-      </Form>
-    </div>
+    <Container fluid className="h-100">
+      <Row className="justify-content-center align-content-center h-100">
+        <Col xs={12} md={8} xxl={6}>
+          <Card>
+            <Card.Body className="p-5">
+              <Form noValidate onSubmit={formik.handleSubmit} className="col-md-6 mt-3 mb-0">
+                <h2 className="text-center mb-4">Войти</h2>
+                <Form.Group className="form-floating mb-4">
+                  <Form.Control
+                    name="username"
+                    autoComplete="username"
+                    required
+                    placeholder="Имя пользователя"
+                    id="username"
+                    isInvalid={authFailed}
+                    onChange={formik.handleChange}
+                    value={formik.values.username}
+                  />
+                  <Form.Label>
+                    Имя пользователя
+                  </Form.Label>
+                </Form.Group>
+                <Form.Group className="form-floating mb-4">
+                  <Form.Control
+                    autoComplete="password"
+                    id="password"
+                    name="password"
+                    type="password"
+                    required
+                    isInvalid={authFailed}
+                    onChange={formik.handleChange}
+                    value={formik.values.password}
+                    placeholder="Пароль"
+                  />
+                  <Form.Label>
+                    Пароль
+                  </Form.Label>
+                  <Form.Control.Feedback type="invalid" className="invalid-tooltip">Неверное имя пользователя или пароль</Form.Control.Feedback>
+                </Form.Group>
+                <Button variant="outline-primary" type="submit" className="w-100 mb-3">Войти</Button>
+              </Form>
+            </Card.Body>
+            <Card.Footer className="p-4">
+              ?
+            </Card.Footer>
+          </Card>
+        </Col>
+      </Row>
+    </Container>
   );
 };
 
