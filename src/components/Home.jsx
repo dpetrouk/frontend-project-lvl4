@@ -1,19 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  Container, Row, Col, Nav, Button, InputGroup, FormControl,
+  Container, Row, Col, Nav, Button, InputGroup, FormControl, Dropdown,
 } from 'react-bootstrap';
 import { io } from 'socket.io-client';
+import cn from 'classnames';
 
 import useAuth from '../hooks/index.jsx';
-import { addChannel, channelsSelectors } from '../slices/channelsSlice.js';
-import { addMessage, messagesSelectors } from '../slices/messagesSlice.js';
+import { channelsSelectors } from '../slices/channelsSlice.js';
+import { messagesSelectors } from '../slices/messagesSlice.js';
 import fetchData from '../slices/fetchData.js';
+
+import getModal from './modals/index.js';
 
 const socket = io();
 
-const renderAddChannelButton = () => (
+const renderAddChannelButton = ({ showModal }) => (
   <Button
+    onClick={() => showModal('adding')}
     variant={null}
     className="p-0 text-primary btn btn-group-vertical"
   >
@@ -39,18 +43,43 @@ const renderSendButton = () => (
 );
 
 const renderChannels = ({ channels, selectedChannelId, selectChannel }) => (
-  channels.map(({ id, name }) => (
-    <Nav.Item as="li" key={id} className="w-100">
-      <Button
-        onClick={selectChannel(id)}
-        variant={id === selectedChannelId ? 'secondary' : null}
-        className="w-100 rounded text-start"
-      >
-        <span className="me-1">#</span>
-        {name}
-      </Button>
-    </Nav.Item>
-  ))
+  channels.map(({ id, name, removable }) => {
+    const renderChannelButton = () => {
+      const generalClassNames = cn('w-100 rounded-0 text-start');
+      const removableChannelClassNames = cn(generalClassNames, 'text-truncate');
+      return (
+        <Button
+          onClick={selectChannel(id)}
+          variant={id === selectedChannelId ? 'secondary' : null}
+          className={removable ? removableChannelClassNames : generalClassNames}
+          type="button"
+        >
+          <span className="me-1">#</span>
+          {name}
+        </Button>
+      );
+    };
+
+    return (
+      <Nav.Item as="li" key={id} className="w-100">
+        {removable
+          ? (
+            <Dropdown className="d-flex btn-group">
+              {renderChannelButton()}
+              <Dropdown.Toggle
+                split
+                variant={id === selectedChannelId ? 'secondary' : null}
+              />
+              <Dropdown.Menu>
+                <Dropdown.Item onClick={() => console.log('Delete channel', id)}>Удалить</Dropdown.Item>
+                <Dropdown.Item onClick={() => console.log('Rename channel', id)}>Переименовать</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+          )
+          : renderChannelButton()}
+      </Nav.Item>
+    );
+  })
 );
 
 const renderMessages = (messages) => messages.map(({ username, id, body }) => (
@@ -61,13 +90,16 @@ const renderMessages = (messages) => messages.map(({ username, id, body }) => (
   </div>
 ));
 
-const renderMessageInput = ({ message, handleMessageInput, sendMessage }) => (
+const renderMessageInput = ({
+  message, handleMessageInput, sendMessage, messageInputRef,
+}) => (
   <div className="mt-auto px-5 py-3">
     <form onSubmit={sendMessage} className="py-1 border rounded-2">
       <InputGroup>
         <FormControl
           onChange={handleMessageInput}
           value={message}
+          ref={messageInputRef}
           placeholder="Введите сообщение..."
           aria-label="Новое сообщение"
           className="border-0 p-0 ps-2"
@@ -78,14 +110,34 @@ const renderMessageInput = ({ message, handleMessageInput, sendMessage }) => (
   </div>
 );
 
+const renderModal = ({ modalInfo, hideModal }) => {
+  if (!modalInfo.type) {
+    return null;
+  }
+
+  const Component = getModal(modalInfo.type);
+  return (
+    <Component modalInfo={modalInfo} onHide={hideModal} socket={socket} />
+  );
+};
+
 const Home = () => {
   // console.log('Home');
   const dispatch = useDispatch();
   const { token, username } = useAuth();
 
+  const messageInputRef = React.createRef(null);
+  const focusOnMessageInput = () => {
+    console.log(messageInputRef.current);
+    messageInputRef.current.focus();
+  };
+
   const [message, setMessage] = useState('');
   const [selectedChannelId, setSelectedChannelId] = useState(1);
-  const selectChannel = (id) => () => setSelectedChannelId(id);
+  const selectChannel = (id) => () => {
+    setSelectedChannelId(id);
+    focusOnMessageInput();
+  };
 
   useEffect(() => {
     const dispatchFetchData = () => dispatch(fetchData(token));
@@ -117,36 +169,43 @@ const Home = () => {
     socket.emit('newMessage', { username, body: message, channelId: selectedChannelId });
   };
 
+  const [modalInfo, setModalInfo] = useState({ type: null, item: null });
+  const hideModal = () => setModalInfo({ type: null, item: null });
+  const showModal = (type, item = null) => setModalInfo({ type, item });
+
   return (
-    <Container className="h-100 my-4 overflow-hidden rounded shadow">
-      <Row className="h-100 bg-white flex-md-row">
-        <Col xs={4} md={2} className="border-end pt-5 px-0 bg-light">
-          <div className="d-flex justify-content-between mb-2 ps-4 pe-2">
-            <span>Каналы</span>
-            {renderAddChannelButton()}
-          </div>
-          <Nav as="ul" variant="pills" fill className="flex-column px-2">
-            {renderChannels({ channels, selectedChannelId, selectChannel })}
-          </Nav>
-        </Col>
-        <Col className="p-0 h-100">
-          <div className="d-flex flex-column h-100">
-            <div className="bg-light mb-4 p-3 shadow-sm small">
-              <p className="m-0">
-                <b>
-                  {`# ${selectedChannel?.name}`}
-                </b>
-              </p>
-              <span className="text-muted">{`${channelMessages.length} сообщ`}</span>
+    <>
+      <Container className="h-100 my-4 overflow-hidden rounded shadow">
+        <Row className="h-100 bg-white flex-md-row">
+          <Col xs={4} md={2} className="border-end pt-5 px-0 bg-light">
+            <div className="d-flex justify-content-between mb-2 ps-4 pe-2">
+              <span>Каналы</span>
+              {renderAddChannelButton({ showModal })}
             </div>
-            <div className="overflow-auto px-5">
-              {renderMessages(channelMessages)}
+            <Nav as="ul" variant="pills" fill className="flex-column px-2">
+              {renderChannels({ channels, selectedChannelId, selectChannel })}
+            </Nav>
+          </Col>
+          <Col className="p-0 h-100">
+            <div className="d-flex flex-column h-100">
+              <div className="bg-light mb-4 p-3 shadow-sm small">
+                <p className="m-0">
+                  <b>
+                    {`# ${selectedChannel?.name}`}
+                  </b>
+                </p>
+                <span className="text-muted">{`${channelMessages.length} сообщ`}</span>
+              </div>
+              <div className="overflow-auto px-5">
+                {renderMessages(channelMessages)}
+              </div>
+              {renderMessageInput({ message, handleMessageInput, sendMessage, messageInputRef })}
             </div>
-            {renderMessageInput({ message, handleMessageInput, sendMessage })}
-          </div>
-        </Col>
-      </Row>
-    </Container>
+          </Col>
+        </Row>
+      </Container>
+      {renderModal({ modalInfo, hideModal, socket })}
+    </>
   );
 };
 
