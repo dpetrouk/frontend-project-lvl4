@@ -112,7 +112,7 @@ const renderMessageInput = ({
   </div>
 );
 
-const renderModal = ({ modalInfo, hideModal }) => {
+const renderModal = ({ modalInfo, hideModal, setSelectedChannelId }) => {
   if (!modalInfo.type) {
     return null;
   }
@@ -123,6 +123,7 @@ const renderModal = ({ modalInfo, hideModal }) => {
       modalInfo={modalInfo}
       onHide={hideModal}
       socket={socket}
+      setSelectedChannelId={setSelectedChannelId}
     />
   );
 };
@@ -155,10 +156,7 @@ const Home = () => {
       dispatchFetchData();
       setMessage('');
     });
-    socket.on('newChannel', ({ id }) => {
-      dispatchFetchData();
-      setSelectedChannelId(id);
-    });
+    socket.on('newChannel', dispatchFetchData);
     socket.on('removeChannel', () => {
       dispatchFetchData();
       setSelectedChannelId(1);
@@ -219,7 +217,7 @@ const Home = () => {
           </Col>
         </Row>
       </Container>
-      {renderModal({ modalInfo, hideModal })}
+      {renderModal({ modalInfo, hideModal, setSelectedChannelId })}
     </>
   );
 };

@@ -2,8 +2,11 @@ import React, { useEffect, useRef } from 'react';
 import { useFormik } from 'formik';
 import { Modal, Form, Button } from 'react-bootstrap';
 
-const generateOnSubmit = ({ socket, onHide }) => (values) => {
-  socket.emit('newChannel', { name: values.channelName });
+const generateOnSubmit = ({ socket, setSelectedChannelId, onHide }) => (values) => {
+  socket.emit('newChannel', { name: values.channelName }, (response) => {
+    console.log({ response });
+    setSelectedChannelId(response.data.id);
+  });
   onHide();
 };
 
