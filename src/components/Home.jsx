@@ -42,10 +42,12 @@ const renderSendButton = () => (
   </Button>
 );
 
-const renderChannels = ({ channels, selectedChannelId, selectChannel }) => (
+const renderChannels = ({
+  channels, selectedChannelId, selectChannel, showModal,
+}) => (
   channels.map(({ id, name, removable }) => {
     const renderChannelButton = () => {
-      const generalClassNames = cn('w-100 rounded-0 text-start');
+      const generalClassNames = cn('w-100', 'rounded-0', 'text-start');
       const removableChannelClassNames = cn(generalClassNames, 'text-truncate');
       return (
         <Button
@@ -71,8 +73,8 @@ const renderChannels = ({ channels, selectedChannelId, selectChannel }) => (
                 variant={id === selectedChannelId ? 'secondary' : null}
               />
               <Dropdown.Menu>
-                <Dropdown.Item onClick={() => console.log('Delete channel', id)}>Удалить</Dropdown.Item>
-                <Dropdown.Item onClick={() => console.log('Rename channel', id)}>Переименовать</Dropdown.Item>
+                <Dropdown.Item onClick={() => showModal('removing', { id })}>Удалить</Dropdown.Item>
+                <Dropdown.Item onClick={() => showModal('renaming', { id, name })}>Переименовать</Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
           )
@@ -117,7 +119,11 @@ const renderModal = ({ modalInfo, hideModal }) => {
 
   const Component = getModal(modalInfo.type);
   return (
-    <Component modalInfo={modalInfo} onHide={hideModal} socket={socket} />
+    <Component
+      modalInfo={modalInfo}
+      onHide={hideModal}
+      socket={socket}
+    />
   );
 };
 
@@ -128,7 +134,6 @@ const Home = () => {
 
   const messageInputRef = React.createRef(null);
   const focusOnMessageInput = () => {
-    console.log(messageInputRef.current);
     messageInputRef.current.focus();
   };
 
@@ -150,8 +155,14 @@ const Home = () => {
       dispatchFetchData();
       setMessage('');
     });
-    socket.on('newChannel', dispatchFetchData);
-    socket.on('removeChannel', dispatchFetchData);
+    socket.on('newChannel', ({ id }) => {
+      dispatchFetchData();
+      setSelectedChannelId(id);
+    });
+    socket.on('removeChannel', () => {
+      dispatchFetchData();
+      setSelectedChannelId(1);
+    });
     socket.on('renameChannel', dispatchFetchData);
   }, []);
 
@@ -183,7 +194,9 @@ const Home = () => {
               {renderAddChannelButton({ showModal })}
             </div>
             <Nav as="ul" variant="pills" fill className="flex-column px-2">
-              {renderChannels({ channels, selectedChannelId, selectChannel })}
+              {renderChannels({
+                channels, selectedChannelId, selectChannel, showModal,
+              })}
             </Nav>
           </Col>
           <Col className="p-0 h-100">
@@ -199,12 +212,14 @@ const Home = () => {
               <div className="overflow-auto px-5">
                 {renderMessages(channelMessages)}
               </div>
-              {renderMessageInput({ message, handleMessageInput, sendMessage, messageInputRef })}
+              {renderMessageInput({
+                message, handleMessageInput, sendMessage, messageInputRef,
+              })}
             </div>
           </Col>
         </Row>
       </Container>
-      {renderModal({ modalInfo, hideModal, socket })}
+      {renderModal({ modalInfo, hideModal })}
     </>
   );
 };
