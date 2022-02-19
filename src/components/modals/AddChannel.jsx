@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useFormik } from 'formik';
 import { Modal, Form, Button } from 'react-bootstrap';
-import * as yup from 'yup';
-import { useSelector } from 'react-redux';
-import { channelsSelectors } from '../../slices/channelsSlice.js';
+import getSchema from './getValidationSchema.js';
 
 const generateOnSubmit = ({ socket, setSelectedChannelId, onHide }) => (values) => {
   socket.emit('newChannel', { name: values.name }, (response) => {
@@ -22,17 +20,15 @@ export default (props) => {
     inputRef.current.focus();
   }, []);
 
-  const channels = useSelector(channelsSelectors.selectAll);
-  const channelsNames = channels.map(({ name }) => name); // Может лучше через селектор?
+  const schema = getSchema();
 
-  const schema = yup.string().min(3).notOneOf(channelsNames);
   const validate = ({ name }) => {
     const errors = {};
     schema.validate(name)
       .catch((err) => {
         errors.name = err.message;
-        setIsInvalid(true);
         inputRef.current.focus();
+        setIsInvalid(true);
       });
     return errors;
   };
@@ -62,8 +58,6 @@ export default (props) => {
               required
               isInvalid={isInvalid}
               name="name"
-              id="name"
-              className="mb-2"
             />
             <Form.Control.Feedback type="invalid">
               {f.errors.name}
