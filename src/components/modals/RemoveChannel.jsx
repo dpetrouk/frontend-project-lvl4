@@ -1,7 +1,8 @@
 import React from 'react';
 import { Modal, Form, Button } from 'react-bootstrap';
 
-const generateOnSubmit = ({ socket, modalInfo, onHide }) => () => {
+const generateOnSubmit = ({ socket, modalInfo, onHide }) => (e) => {
+  e.preventDefault();
   socket.emit('removeChannel', { id: modalInfo.item.id });
   onHide();
 };
