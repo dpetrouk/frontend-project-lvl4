@@ -13,6 +13,8 @@ import fetchData from '../slices/fetchData.js';
 
 import getModal from './modals/index.js';
 
+const defaultChannelId = 1;
+
 const socket = io();
 
 const renderAddChannelButton = ({ showModal }) => (
@@ -139,11 +141,16 @@ const Home = () => {
   };
 
   const [message, setMessage] = useState('');
-  const [selectedChannelId, setSelectedChannelId] = useState(1);
+  const [selectedChannelId, setSelectedChannelId] = useState(defaultChannelId);
   const selectChannel = (id) => () => {
     setSelectedChannelId(id);
     focusOnMessageInput();
   };
+
+  const [removedChannelId, setRemovedChannelId] = useState();
+  if (removedChannelId === selectedChannelId) {
+    setSelectedChannelId(defaultChannelId);
+  }
 
   useEffect(() => {
     const dispatchFetchData = () => dispatch(fetchData(token));
@@ -157,9 +164,9 @@ const Home = () => {
       setMessage('');
     });
     socket.on('newChannel', dispatchFetchData);
-    socket.on('removeChannel', () => {
+    socket.on('removeChannel', ({ id }) => {
       dispatchFetchData();
-      setSelectedChannelId(1);
+      setRemovedChannelId(id);
     });
     socket.on('renameChannel', dispatchFetchData);
   }, []);
