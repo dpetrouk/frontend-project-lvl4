@@ -3,23 +3,25 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   Container, Row, Col, Nav, Button, InputGroup, FormControl, Dropdown,
 } from 'react-bootstrap';
-import { io } from 'socket.io-client';
 import cn from 'classnames';
 
+import { socket } from '../socket.js';
 import useAuth from '../hooks/index.jsx';
-import { channelsSelectors } from '../slices/channelsSlice.js';
-import { messagesSelectors } from '../slices/messagesSlice.js';
-import fetchData from '../slices/fetchData.js';
+
+import {
+  setInitialState, setCurrentChannel, addChannel, renameChannel, removeChannel,
+} from '../slices/channelsInfoSlice.js';
+import { addMessage } from '../slices/messagesInfoSlice.js';
+import { openModal, closeModal } from '../slices/modalSlice.js';
+import store from '../slices/index.js';
 
 import getModal from './modals/index.js';
 
 const defaultChannelId = 1;
 
-const socket = io();
-
 const renderAddChannelButton = ({ showModal }) => (
   <Button
-    onClick={() => showModal('adding')}
+    onClick={() => showModal('addChannel')}
     variant={null}
     className="p-0 text-primary btn btn-group-vertical"
   >
@@ -45,7 +47,7 @@ const renderSendButton = () => (
 );
 
 const renderChannels = ({
-  channels, selectedChannelId, selectChannel, showModal,
+  channels, currentChannelId, selectChannel, showModal,
 }) => (
   channels.map(({ id, name, removable }) => {
     const renderChannelButton = () => {
@@ -53,8 +55,8 @@ const renderChannels = ({
       const removableChannelClassNames = cn(generalClassNames, 'text-truncate');
       return (
         <Button
-          onClick={selectChannel(id)}
-          variant={id === selectedChannelId ? 'secondary' : null}
+          onClick={() => selectChannel(id)}
+          variant={id === currentChannelId ? 'secondary' : null}
           className={removable ? removableChannelClassNames : generalClassNames}
           type="button"
         >
@@ -72,11 +74,11 @@ const renderChannels = ({
               {renderChannelButton()}
               <Dropdown.Toggle
                 split
-                variant={id === selectedChannelId ? 'secondary' : null}
+                variant={id === currentChannelId ? 'secondary' : null}
               />
               <Dropdown.Menu>
-                <Dropdown.Item onClick={() => showModal('removing', { id })}>Удалить</Dropdown.Item>
-                <Dropdown.Item onClick={() => showModal('renaming', { id, name })}>Переименовать</Dropdown.Item>
+                <Dropdown.Item onClick={() => showModal('removeChannel', { channelId: id })}>Удалить</Dropdown.Item>
+                <Dropdown.Item onClick={() => showModal('renameChannel', { channelId: id })}>Переименовать</Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
           )
@@ -114,80 +116,92 @@ const renderMessageInput = ({
   </div>
 );
 
-const renderModal = ({ modalInfo, hideModal, setSelectedChannelId }) => {
-  if (!modalInfo.type) {
+const renderModal = ({ modalInfo, hideModal, selectChannel }) => {
+  if (!modalInfo.isOpened) {
     return null;
   }
+  console.log({ modalInfo });
 
   const Component = getModal(modalInfo.type);
   return (
     <Component
       modalInfo={modalInfo}
-      onHide={hideModal}
-      socket={socket}
-      setSelectedChannelId={setSelectedChannelId}
+      hideModal={hideModal}
+      selectChannel={selectChannel}
     />
   );
 };
 
+const isCurrentChannel = (id) => {
+  const state = store.getState();
+  const { currentChannelId } = state.channelsInfo;
+  return currentChannelId === id;
+};
+
 const Home = () => {
-  // console.log('Home');
-  const dispatch = useDispatch();
+  console.log('Home');
   const { token, username } = useAuth();
 
-  const messageInputRef = React.createRef(null);
-  const focusOnMessageInput = () => {
-    messageInputRef.current.focus();
+  const dispatch = useDispatch();
+
+  const selectChannel = (channelId) => {
+    dispatch(setCurrentChannel({ channelId }));
   };
 
   const [message, setMessage] = useState('');
-  const [selectedChannelId, setSelectedChannelId] = useState(defaultChannelId);
-  const selectChannel = (id) => () => {
-    setSelectedChannelId(id);
-    focusOnMessageInput();
-  };
-
-  const [removedChannelId, setRemovedChannelId] = useState();
-  if (removedChannelId === selectedChannelId) {
-    setSelectedChannelId(defaultChannelId);
-  }
 
   useEffect(() => {
-    const dispatchFetchData = () => dispatch(fetchData(token));
-    console.log('Before dispatching');
-    dispatchFetchData();
+    dispatch(setInitialState(token));
+
     socket.on('connect', () => {
-      console.log('socket: connect');
+      console.log('Socket is connected');
     });
-    socket.on('newMessage', () => {
-      dispatchFetchData();
+
+    socket.on('newMessage', (messageWithId) => {
+      dispatch(addMessage(messageWithId));
       setMessage('');
     });
-    socket.on('newChannel', dispatchFetchData);
-    socket.on('removeChannel', ({ id }) => {
-      dispatchFetchData();
-      setRemovedChannelId(id);
+    socket.on('newChannel', (channelWithId) => {
+      dispatch(addChannel(channelWithId));
     });
-    socket.on('renameChannel', dispatchFetchData);
+    socket.on('renameChannel', (channel) => {
+      dispatch(renameChannel(channel));
+    });
+    socket.on('removeChannel', ({ id }) => {
+      dispatch(removeChannel({ id }));
+      if (isCurrentChannel(id)) {
+        selectChannel(defaultChannelId);
+      }
+    });
   }, []);
 
-  const channels = useSelector(channelsSelectors.selectAll);
-  const messages = useSelector(messagesSelectors.selectAll);
+  const currentChannelId = useSelector((state) => state.channelsInfo.currentChannelId);
+  const channels = useSelector((state) => state.channelsInfo.channels);
+  const messages = useSelector((state) => state.messagesInfo.messages);
+  console.log({ channels, messages });
 
-  const selectedChannel = channels.find(({ id }) => id === selectedChannelId);
-  const channelMessages = messages.filter(({ channelId }) => channelId === selectedChannelId);
-  console.log({ username, channels, selectedChannel, channelMessages, messages });
+  const currentChannel = channels.find(({ id }) => id === currentChannelId);
+  const currentChannelMessages = messages.filter(({ channelId }) => channelId === currentChannelId);
 
-  const handleMessageInput = (e) => setMessage(e.target.value);
+  console.log({
+    username, channels, currentChannel, currentChannelMessages, messages,
+  });
 
   const sendMessage = (e) => {
     e.preventDefault();
-    socket.emit('newMessage', { username, body: message, channelId: selectedChannelId });
+    socket.emit('newMessage', { body: message, channelId: currentChannelId, username });
   };
 
-  const [modalInfo, setModalInfo] = useState({ type: null, item: null });
-  const hideModal = () => setModalInfo({ type: null, item: null });
-  const showModal = (type, item = null) => setModalInfo({ type, item });
+  const modalInfo = useSelector((state) => state.modal);
+  const hideModal = () => dispatch(closeModal());
+  const showModal = (type, extra = null) => dispatch(openModal({ type, extra }));
+
+  const handleMessageInput = (e) => setMessage(e.target.value);
+
+  const messageInputRef = React.createRef(null);
+  useEffect(() => {
+    messageInputRef.current.focus();
+  });
 
   return (
     <>
@@ -200,7 +214,7 @@ const Home = () => {
             </div>
             <Nav as="ul" variant="pills" fill className="flex-column px-2">
               {renderChannels({
-                channels, selectedChannelId, selectChannel, showModal,
+                channels, currentChannelId, selectChannel, showModal,
               })}
             </Nav>
           </Col>
@@ -209,13 +223,13 @@ const Home = () => {
               <div className="bg-light mb-4 p-3 shadow-sm small">
                 <p className="m-0">
                   <b>
-                    {`# ${selectedChannel?.name}`}
+                    {`# ${currentChannel?.name}`}
                   </b>
                 </p>
-                <span className="text-muted">{`${channelMessages.length} сообщ`}</span>
+                <span className="text-muted">{`${currentChannelMessages.length} сообщ`}</span>
               </div>
               <div className="overflow-auto px-5">
-                {renderMessages(channelMessages)}
+                {renderMessages(currentChannelMessages)}
               </div>
               {renderMessageInput({
                 message, handleMessageInput, sendMessage, messageInputRef,
@@ -224,7 +238,7 @@ const Home = () => {
           </Col>
         </Row>
       </Container>
-      {renderModal({ modalInfo, hideModal, setSelectedChannelId })}
+      {renderModal({ modalInfo, hideModal, selectChannel })}
     </>
   );
 };
