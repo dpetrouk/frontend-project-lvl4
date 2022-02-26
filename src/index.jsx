@@ -11,12 +11,15 @@ import { Provider } from 'react-redux';
 
 import App from './components/App.jsx';
 import store from './slices/index.js';
+import { initSocket } from './socket.js';
 
 if (process.env.NODE_ENV !== 'production') {
   localStorage.debug = 'chat:*';
 }
 
 const container = document.querySelector('#chat');
+
+initSocket();
 
 ReactDOM.render(
   <Provider store={store}>
