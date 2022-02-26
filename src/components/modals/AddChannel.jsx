@@ -7,7 +7,7 @@ import { socket } from '../../socket.js';
 
 const generateOnSubmit = ({ selectChannel, hideModal }) => (values) => {
   socket.emit('newChannel', { name: values.name }, (response) => {
-    setTimeout(() => selectChannel(response.data.id), 30);
+    selectChannel(response.data.id);
   });
   hideModal();
 };
