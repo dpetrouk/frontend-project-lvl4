@@ -5,16 +5,19 @@ import { Modal, Form, Button } from 'react-bootstrap';
 import getSchema from './getValidationSchema.js';
 import { socket } from '../../socket.js';
 
-const generateOnSubmit = ({ selectChannel, hideModal }) => (values) => {
+const generateOnSubmit = ({ selectChannel, hideModal }, setIsSubmitDisabled) => (values) => {
+  setIsSubmitDisabled(true);
   socket.emit('newChannel', { name: values.name }, (response) => {
+    setIsSubmitDisabled(false);
     selectChannel(response.data.id);
+    hideModal();
   });
-  hideModal();
 };
 
 export default (props) => {
   const { hideModal } = props;
   const [isInvalid, setIsInvalid] = useState(false);
+  const [isSubmitDisabled, setIsSubmitDisabled] = useState(false);
 
   const inputRef = useRef();
   useEffect(() => {
@@ -35,7 +38,7 @@ export default (props) => {
   };
 
   const f = useFormik({
-    onSubmit: generateOnSubmit(props),
+    onSubmit: generateOnSubmit(props, setIsSubmitDisabled),
     initialValues: { name: '' },
     validate,
     validateOnChange: false,
@@ -66,7 +69,7 @@ export default (props) => {
           </Form.Group>
           <div className="d-flex justify-content-end">
             <Button onClick={hideModal} variant="secondary" className="me-2">Отменить</Button>
-            <Button type="submit">Отправить</Button>
+            <Button type="submit" disabled={isSubmitDisabled}>Отправить</Button>
           </div>
         </Form>
       </Modal.Body>

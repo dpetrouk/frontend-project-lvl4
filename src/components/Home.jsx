@@ -25,8 +25,9 @@ const renderAddChannelButton = ({ showModal }) => (
   </Button>
 );
 
-const renderSendButton = () => (
+const renderSendButton = ({ isSendDisabled }) => (
   <Button
+    disabled={isSendDisabled}
     type="submit"
     variant={null}
     className="btn-group-vertical"
@@ -89,7 +90,7 @@ const renderMessages = (messages) => messages.map(({ username, id, body }) => (
 ));
 
 const renderMessageInput = ({
-  message, handleMessageInput, sendMessage, messageInputRef,
+  message, handleMessageInput, sendMessage, messageInputRef, isSendDisabled,
 }) => (
   <div className="mt-auto px-5 py-3">
     <form onSubmit={sendMessage} className="py-1 border rounded-2">
@@ -102,7 +103,7 @@ const renderMessageInput = ({
           aria-label="Новое сообщение"
           className="border-0 p-0 ps-2"
         />
-        {renderSendButton()}
+        {renderSendButton({ isSendDisabled })}
       </InputGroup>
     </form>
   </div>
@@ -152,10 +153,14 @@ const Home = () => {
     username, channels, currentChannel, currentChannelMessages, messages,
   });
 
+  const [isSendDisabled, setIsSendDisabled] = useState(true);
+
   const sendMessage = (e) => {
     e.preventDefault();
+    setIsSendDisabled(true);
     socket.emit('newMessage', { body: message, channelId: currentChannelId, username }, () => {
       setMessage('');
+      setIsSendDisabled(false);
     });
   };
 
@@ -163,7 +168,10 @@ const Home = () => {
   const hideModal = () => dispatch(closeModal());
   const showModal = (type, extra = null) => dispatch(openModal({ type, extra }));
 
-  const handleMessageInput = (e) => setMessage(e.target.value);
+  const handleMessageInput = (e) => {
+    setIsSendDisabled(e.target.value === '');
+    setMessage(e.target.value);
+  };
 
   const messageInputRef = React.createRef(null);
   useEffect(() => {
@@ -199,7 +207,7 @@ const Home = () => {
                 {renderMessages(currentChannelMessages)}
               </div>
               {renderMessageInput({
-                message, handleMessageInput, sendMessage, messageInputRef,
+                message, handleMessageInput, sendMessage, messageInputRef, isSendDisabled,
               })}
             </div>
           </Col>

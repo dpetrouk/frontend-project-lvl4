@@ -6,9 +6,12 @@ import { Modal, Form, Button } from 'react-bootstrap';
 import getSchema from './getValidationSchema.js';
 import { socket } from '../../socket.js';
 
-const generateOnSubmit = ({ modalInfo, hideModal }) => (values) => {
-  socket.emit('renameChannel', { id: modalInfo.extra.channelId, name: values.name });
-  hideModal();
+const generateOnSubmit = ({ modalInfo, hideModal }, setIsSubmitDisabled) => (values) => {
+  setIsSubmitDisabled(true);
+  socket.emit('renameChannel', { id: modalInfo.extra.channelId, name: values.name }, () => {
+    setIsSubmitDisabled(false);
+    hideModal();
+  });
 };
 
 export default (props) => {
@@ -18,6 +21,7 @@ export default (props) => {
   const channel = channels.find(({ id }) => id === channelId);
 
   const [isInvalid, setIsInvalid] = useState(false);
+  const [isSubmitDisabled, setIsSubmitDisabled] = useState(false);
 
   const inputRef = useRef();
   useEffect(() => {
@@ -38,7 +42,7 @@ export default (props) => {
   };
 
   const f = useFormik({
-    onSubmit: generateOnSubmit(props),
+    onSubmit: generateOnSubmit(props, setIsSubmitDisabled),
     initialValues: { name: channel.name },
     validate,
     validateOnChange: false,
@@ -68,7 +72,7 @@ export default (props) => {
           </Form.Group>
           <div className="d-flex justify-content-end">
             <Button onClick={hideModal} variant="secondary" className="me-2">Отменить</Button>
-            <Button type="submit">Отправить</Button>
+            <Button type="submit" disabled={isSubmitDisabled}>Отправить</Button>
           </div>
         </Form>
       </Modal.Body>
