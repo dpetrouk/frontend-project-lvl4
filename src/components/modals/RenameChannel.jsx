@@ -1,22 +1,28 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import { useFormik } from 'formik';
 import { Modal, Form, Button } from 'react-bootstrap';
-import getSchema from './getValidationSchema.js';
 
-const generateOnSubmit = ({ socket, modalInfo, onHide }) => (values) => {
-  socket.emit('renameChannel', { id: modalInfo.item.id, name: values.name });
-  onHide();
+import getSchema from './getValidationSchema.js';
+import { socket } from '../../socket.js';
+
+const generateOnSubmit = ({ modalInfo, hideModal }) => (values) => {
+  socket.emit('renameChannel', { id: modalInfo.extra.channelId, name: values.name });
+  hideModal();
 };
 
 export default (props) => {
-  const { onHide, modalInfo } = props;
+  const { hideModal, modalInfo } = props;
+  const { channelId } = modalInfo.extra;
+  const channels = useSelector((state) => state.channelsInfo.channels);
+  const channel = channels.find(({ id }) => id === channelId);
 
   const [isInvalid, setIsInvalid] = useState(false);
 
   const inputRef = useRef();
   useEffect(() => {
     inputRef.current.focus();
-  }, []);
+  });
 
   const schema = getSchema();
 
@@ -33,14 +39,14 @@ export default (props) => {
 
   const f = useFormik({
     onSubmit: generateOnSubmit(props),
-    initialValues: { name: modalInfo.item.name },
+    initialValues: { name: channel.name },
     validate,
     validateOnChange: false,
     validateOnBlur: false,
   });
 
   return (
-    <Modal show centered backdrop onHide={onHide}>
+    <Modal show centered backdrop onHide={hideModal}>
       <Modal.Header closeButton>
         <Modal.Title>Переименовать канал</Modal.Title>
       </Modal.Header>
@@ -61,7 +67,7 @@ export default (props) => {
             </Form.Control.Feedback>
           </Form.Group>
           <div className="d-flex justify-content-end">
-            <Button onClick={onHide} variant="secondary" className="me-2">Отменить</Button>
+            <Button onClick={hideModal} variant="secondary" className="me-2">Отменить</Button>
             <Button type="submit">Отправить</Button>
           </div>
         </Form>

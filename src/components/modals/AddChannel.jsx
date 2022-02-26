@@ -1,24 +1,25 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useFormik } from 'formik';
 import { Modal, Form, Button } from 'react-bootstrap';
-import getSchema from './getValidationSchema.js';
 
-const generateOnSubmit = ({ socket, setSelectedChannelId, onHide }) => (values) => {
+import getSchema from './getValidationSchema.js';
+import { socket } from '../../socket.js';
+
+const generateOnSubmit = ({ selectChannel, hideModal }) => (values) => {
   socket.emit('newChannel', { name: values.name }, (response) => {
-    setSelectedChannelId(response.data.id);
+    setTimeout(() => selectChannel(response.data.id), 30);
   });
-  onHide();
+  hideModal();
 };
 
 export default (props) => {
-  const { onHide } = props;
-
+  const { hideModal } = props;
   const [isInvalid, setIsInvalid] = useState(false);
 
   const inputRef = useRef();
   useEffect(() => {
     inputRef.current.focus();
-  }, []);
+  });
 
   const schema = getSchema();
 
@@ -42,7 +43,7 @@ export default (props) => {
   });
 
   return (
-    <Modal show centered backdrop onHide={onHide}>
+    <Modal show centered backdrop onHide={hideModal}>
       <Modal.Header closeButton>
         <Modal.Title>Добавить канал</Modal.Title>
       </Modal.Header>
@@ -64,7 +65,7 @@ export default (props) => {
             </Form.Control.Feedback>
           </Form.Group>
           <div className="d-flex justify-content-end">
-            <Button onClick={onHide} variant="secondary" className="me-2">Отменить</Button>
+            <Button onClick={hideModal} variant="secondary" className="me-2">Отменить</Button>
             <Button type="submit">Отправить</Button>
           </div>
         </Form>
