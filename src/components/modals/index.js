@@ -3,9 +3,9 @@ import Remove from './RemoveChannel.jsx';
 import Rename from './RenameChannel.jsx';
 
 const modals = {
-  adding: Add,
-  removing: Remove,
-  renaming: Rename,
+  addChannel: Add,
+  renameChannel: Rename,
+  removeChannel: Remove,
 };
 
 export default (modalName) => modals[modalName];
