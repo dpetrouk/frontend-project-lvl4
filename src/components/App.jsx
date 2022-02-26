@@ -90,7 +90,7 @@ const App = () => {
         <div className="d-flex flex-column h-100">
           <Navbar className="bg-white shadow-sm">
             <Container>
-              <Navbar.Brand href="/">Чат</Navbar.Brand>
+              <Navbar.Brand href="/">Hexlet Chat</Navbar.Brand>
               <AuthButton />
             </Container>
           </Navbar>
