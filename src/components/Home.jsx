@@ -7,17 +7,9 @@ import cn from 'classnames';
 
 import { socket } from '../socket.js';
 import useAuth from '../hooks/index.jsx';
-
-import {
-  setInitialState, setCurrentChannel, addChannel, renameChannel, removeChannel,
-} from '../slices/channelsInfoSlice.js';
-import { addMessage } from '../slices/messagesInfoSlice.js';
+import { setInitialState, setCurrentChannel } from '../slices/channelsInfoSlice.js';
 import { openModal, closeModal } from '../slices/modalSlice.js';
-import store from '../slices/index.js';
-
 import getModal from './modals/index.js';
-
-const defaultChannelId = 1;
 
 const renderAddChannelButton = ({ showModal }) => (
   <Button
@@ -132,12 +124,6 @@ const renderModal = ({ modalInfo, hideModal, selectChannel }) => {
   );
 };
 
-const isCurrentChannel = (id) => {
-  const state = store.getState();
-  const { currentChannelId } = state.channelsInfo;
-  return currentChannelId === id;
-};
-
 const Home = () => {
   console.log('Home');
   const { token, username } = useAuth();
@@ -152,27 +138,6 @@ const Home = () => {
 
   useEffect(() => {
     dispatch(setInitialState(token));
-
-    socket.on('connect', () => {
-      console.log('Socket is connected');
-    });
-
-    socket.on('newMessage', (messageWithId) => {
-      dispatch(addMessage(messageWithId));
-      setMessage('');
-    });
-    socket.on('newChannel', (channelWithId) => {
-      dispatch(addChannel(channelWithId));
-    });
-    socket.on('renameChannel', (channel) => {
-      dispatch(renameChannel(channel));
-    });
-    socket.on('removeChannel', ({ id }) => {
-      dispatch(removeChannel({ id }));
-      if (isCurrentChannel(id)) {
-        selectChannel(defaultChannelId);
-      }
-    });
   }, []);
 
   const currentChannelId = useSelector((state) => state.channelsInfo.currentChannelId);
@@ -189,7 +154,9 @@ const Home = () => {
 
   const sendMessage = (e) => {
     e.preventDefault();
-    socket.emit('newMessage', { body: message, channelId: currentChannelId, username });
+    socket.emit('newMessage', { body: message, channelId: currentChannelId, username }, () => {
+      setMessage('');
+    });
   };
 
   const modalInfo = useSelector((state) => state.modal);
