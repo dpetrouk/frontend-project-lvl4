@@ -3,6 +3,7 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
+  Link,
   Redirect,
 } from 'react-router-dom';
 import { Container, Navbar, Button } from 'react-bootstrap';
@@ -91,7 +92,7 @@ const App = () => {
         <div className="d-flex flex-column h-100">
           <Navbar className="bg-white shadow-sm">
             <Container>
-              <Navbar.Brand href="/">Hexlet Chat</Navbar.Brand>
+              <Link to="/" className="navbar-brand">Hexlet Chat</Link>
               <AuthButton />
             </Container>
           </Navbar>
