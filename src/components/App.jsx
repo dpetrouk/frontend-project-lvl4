@@ -10,6 +10,7 @@ import { Container, Navbar, Button } from 'react-bootstrap';
 import authContext from '../contexts/index.jsx';
 import useAuth from '../hooks/index.jsx';
 import Login from './Login.jsx';
+import Signup from './Signup.jsx';
 import Home from './Home.jsx';
 import NoMatch from './NoMatch.jsx';
 
@@ -97,6 +98,9 @@ const App = () => {
           <Switch>
             <Route path="/login">
               <LoginVerification />
+            </Route>
+            <Route path="/signup">
+              <Signup />
             </Route>
             <PrivateRoute exact path="/">
               <Home />
