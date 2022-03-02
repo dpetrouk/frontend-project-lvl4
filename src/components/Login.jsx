@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import {
   Container, Row, Col, Card, Form, Button,
 } from 'react-bootstrap';
@@ -93,7 +93,9 @@ const Login = () => {
               </Form>
             </Card.Body>
             <Card.Footer className="p-4">
-              ?
+              <div className="text-center">
+                <Link to="/signup">Регистрация</Link>
+              </div>
             </Card.Footer>
           </Card>
         </Col>
