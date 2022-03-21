@@ -7,6 +7,7 @@ import {
   Redirect,
 } from 'react-router-dom';
 import { Container, Navbar, Button } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 
 import authContext from '../contexts/index.jsx';
 import useAuth from '../hooks/index.jsx';
@@ -76,15 +77,17 @@ const PrivateRoute = ({ children, path }) => {
 };
 
 const AuthButton = () => {
+  const { t } = useTranslation();
   const auth = useAuth();
   if (!auth.loggedIn) {
     return null;
   }
-  return <Button variant="outline-secondary" onClick={auth.logOut}>Выйти</Button>;
+  return <Button variant="outline-secondary" onClick={auth.logOut}>{t('logoutButton')}</Button>;
 };
 
 const App = () => {
   console.log('App');
+  const { t } = useTranslation();
 
   return (
     <AuthProvider>
@@ -92,7 +95,7 @@ const App = () => {
         <div className="d-flex flex-column h-100">
           <Navbar className="bg-white shadow-sm">
             <Container>
-              <Link to="/" className="navbar-brand">Hexlet Chat</Link>
+              <Link to="/" className="navbar-brand">{t('title')}</Link>
               <AuthButton />
             </Container>
           </Navbar>

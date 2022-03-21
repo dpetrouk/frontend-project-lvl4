@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { useFormik } from 'formik';
 import { Modal, Form, Button } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 
 import getSchema from './getValidationSchema.js';
 import { socket } from '../../socket.js';
@@ -15,6 +16,7 @@ const generateOnSubmit = ({ modalInfo, hideModal }, setIsSubmitDisabled) => (val
 };
 
 export default (props) => {
+  const { t } = useTranslation();
   const { hideModal, modalInfo } = props;
   const { channelId } = modalInfo.extra;
   const channels = useSelector((state) => state.channelsInfo.channels);
@@ -52,7 +54,7 @@ export default (props) => {
   return (
     <Modal show centered backdrop onHide={hideModal}>
       <Modal.Header closeButton>
-        <Modal.Title>Переименовать канал</Modal.Title>
+        <Modal.Title>{t('chat.modals.renameChannel')}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={f.handleSubmit} noValidate>
@@ -71,8 +73,8 @@ export default (props) => {
             </Form.Control.Feedback>
           </Form.Group>
           <div className="d-flex justify-content-end">
-            <Button onClick={hideModal} variant="secondary" className="me-2">Отменить</Button>
-            <Button type="submit" disabled={isSubmitDisabled}>Отправить</Button>
+            <Button onClick={hideModal} variant="secondary" className="me-2">{t('chat.modals.cancel')}</Button>
+            <Button type="submit" disabled={isSubmitDisabled}>{t('chat.modals.send')}</Button>
           </div>
         </Form>
       </Modal.Body>

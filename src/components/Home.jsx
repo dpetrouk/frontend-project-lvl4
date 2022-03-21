@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   Container, Row, Col, Nav, Button, InputGroup, FormControl, Dropdown,
 } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 import cn from 'classnames';
 
 import { socket } from '../socket.js';
@@ -25,24 +26,28 @@ const renderAddChannelButton = ({ showModal }) => (
   </Button>
 );
 
-const renderSendButton = ({ isSendDisabled }) => (
-  <Button
-    disabled={isSendDisabled}
-    type="submit"
-    variant={null}
-    className="btn-group-vertical"
-  >
-    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-arrow-right-square" viewBox="0 0 16 16">
-      <path fillRule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm4.5 5.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z" />
-    </svg>
-    <span className="visually-hidden">Отправить</span>
-  </Button>
-);
+const renderSendButton = ({ isSendDisabled }) => {
+  const { t } = useTranslation();
+  return (
+    <Button
+      disabled={isSendDisabled}
+      type="submit"
+      variant={null}
+      className="btn-group-vertical"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-arrow-right-square" viewBox="0 0 16 16">
+        <path fillRule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm4.5 5.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z" />
+      </svg>
+      <span className="visually-hidden">{t('chat.send')}</span>
+    </Button>
+  );
+};
 
 const renderChannels = ({
   channels, currentChannelId, selectChannel, showModal,
-}) => (
-  channels.map(({ id, name, removable }) => {
+}) => {
+  const { t } = useTranslation();
+  return channels.map(({ id, name, removable }) => {
     const renderChannelButton = () => {
       const generalClassNames = cn('w-100', 'rounded-0', 'text-start');
       const removableChannelClassNames = cn(generalClassNames, 'text-truncate');
@@ -70,16 +75,16 @@ const renderChannels = ({
                 variant={id === currentChannelId ? 'secondary' : null}
               />
               <Dropdown.Menu>
-                <Dropdown.Item onClick={() => showModal('removeChannel', { channelId: id })}>Удалить</Dropdown.Item>
-                <Dropdown.Item onClick={() => showModal('renameChannel', { channelId: id })}>Переименовать</Dropdown.Item>
+                <Dropdown.Item onClick={() => showModal('removeChannel', { channelId: id })}>{t('chat.channel.remove')}</Dropdown.Item>
+                <Dropdown.Item onClick={() => showModal('renameChannel', { channelId: id })}>{t('chat.channel.rename')}</Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
           )
           : renderChannelButton()}
       </Nav.Item>
     );
-  })
-);
+  });
+};
 
 const renderMessages = (messages) => messages.map(({ username, id, body }) => (
   <div key={id} className="text-break mb-2">
@@ -91,23 +96,26 @@ const renderMessages = (messages) => messages.map(({ username, id, body }) => (
 
 const renderMessageInput = ({
   message, handleMessageInput, sendMessage, messageInputRef, isSendDisabled,
-}) => (
-  <div className="mt-auto px-5 py-3">
-    <form onSubmit={sendMessage} className="py-1 border rounded-2">
-      <InputGroup>
-        <FormControl
-          onChange={handleMessageInput}
-          value={message}
-          ref={messageInputRef}
-          placeholder="Введите сообщение..."
-          aria-label="Новое сообщение"
-          className="border-0 p-0 ps-2"
-        />
-        {renderSendButton({ isSendDisabled })}
-      </InputGroup>
-    </form>
-  </div>
-);
+}) => {
+  const { t } = useTranslation();
+  return (
+    <div className="mt-auto px-5 py-3">
+      <form onSubmit={sendMessage} className="py-1 border rounded-2">
+        <InputGroup>
+          <FormControl
+            onChange={handleMessageInput}
+            value={message}
+            ref={messageInputRef}
+            placeholder={t('chat.enterMessage')}
+            aria-label={t('chat.newMessage')}
+            className="border-0 p-0 ps-2"
+          />
+          {renderSendButton({ isSendDisabled })}
+        </InputGroup>
+      </form>
+    </div>
+  );
+};
 
 const renderModal = ({ modalInfo, hideModal, selectChannel }) => {
   if (!modalInfo.isOpened) {
@@ -127,6 +135,7 @@ const renderModal = ({ modalInfo, hideModal, selectChannel }) => {
 
 const Home = () => {
   console.log('Home');
+  const { t } = useTranslation();
   const { token, username } = useAuth();
 
   const dispatch = useDispatch();
@@ -184,7 +193,7 @@ const Home = () => {
         <Row className="h-100 bg-white flex-md-row">
           <Col xs={4} md={2} className="border-end pt-5 px-0 bg-light">
             <div className="d-flex justify-content-between mb-2 ps-4 pe-2">
-              <span>Каналы</span>
+              <span>{t('chat.channels')}</span>
               {renderAddChannelButton({ showModal })}
             </div>
             <Nav as="ul" variant="pills" fill className="flex-column px-2">
@@ -201,7 +210,7 @@ const Home = () => {
                     {`# ${currentChannel?.name}`}
                   </b>
                 </p>
-                <span className="text-muted">{`${currentChannelMessages.length} сообщ`}</span>
+                <span className="text-muted">{t('chat.messages', { count: currentChannelMessages.length })}</span>
               </div>
               <div className="overflow-auto px-5">
                 {renderMessages(currentChannelMessages)}

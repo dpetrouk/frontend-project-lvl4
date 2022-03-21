@@ -3,6 +3,7 @@ import { useHistory, Link } from 'react-router-dom';
 import {
   Container, Row, Col, Card, Form, Button,
 } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
 import axios from 'axios';
 import * as yup from 'yup';
@@ -16,6 +17,7 @@ const validationSchema = yup.object().shape({
 });
 
 const Login = () => {
+  const { t } = useTranslation();
   const auth = useAuth();
   const history = useHistory();
   const [authFailed, setAuthFailed] = useState(false);
@@ -56,20 +58,20 @@ const Login = () => {
           <Card>
             <Card.Body className="p-5">
               <Form noValidate onSubmit={formik.handleSubmit} className="col-md-6 mt-3 mb-0">
-                <h2 className="text-center mb-4">Войти</h2>
+                <h2 className="text-center mb-4">{t('loginForm.header')}</h2>
                 <Form.Group className="form-floating mb-4">
                   <Form.Control
                     name="username"
                     autoComplete="username"
                     required
-                    placeholder="Имя пользователя"
+                    placeholder={t('loginForm.username')}
                     id="username"
                     isInvalid={authFailed}
                     onChange={formik.handleChange}
                     value={formik.values.username}
                   />
                   <Form.Label>
-                    Имя пользователя
+                    {t('loginForm.username')}
                   </Form.Label>
                 </Form.Group>
                 <Form.Group className="form-floating mb-4">
@@ -82,19 +84,19 @@ const Login = () => {
                     isInvalid={authFailed}
                     onChange={formik.handleChange}
                     value={formik.values.password}
-                    placeholder="Пароль"
+                    placeholder={t('loginForm.password')}
                   />
                   <Form.Label>
-                    Пароль
+                    {t('loginForm.password')}
                   </Form.Label>
-                  <Form.Control.Feedback type="invalid" className="invalid-tooltip">Неверное имя пользователя или пароль</Form.Control.Feedback>
+                  <Form.Control.Feedback type="invalid" className="invalid-tooltip">{t('loginForm.errors.authFail')}</Form.Control.Feedback>
                 </Form.Group>
-                <Button variant="outline-primary" type="submit" className="w-100 mb-3">Войти</Button>
+                <Button variant="outline-primary" type="submit" className="w-100 mb-3">{t('loginForm.submit')}</Button>
               </Form>
             </Card.Body>
             <Card.Footer className="p-4">
               <div className="text-center">
-                <Link to="/signup">Регистрация</Link>
+                <Link to="/signup">{t('loginForm.signupLink')}</Link>
               </div>
             </Card.Footer>
           </Card>
