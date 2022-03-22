@@ -11,6 +11,7 @@ import useAuth from '../hooks/index.jsx';
 import { setInitialState, setCurrentChannel } from '../slices/channelsInfoSlice.js';
 import { openModal, closeModal } from '../slices/modalSlice.js';
 import getModal from './modals/index.js';
+import { profanityFilter } from '../profanityFilter.js';
 
 const renderAddChannelButton = ({ showModal }) => (
   <Button
@@ -90,7 +91,7 @@ const renderMessages = (messages) => messages.map(({ username, id, body }) => (
   <div key={id} className="text-break mb-2">
     <strong>{username}</strong>
     <span>: </span>
-    {body}
+    {profanityFilter.clean(body)}
   </div>
 ));
 

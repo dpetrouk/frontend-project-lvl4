@@ -11,6 +11,7 @@ import { Provider } from 'react-redux';
 import { injectStyle } from 'react-toastify/dist/inject-style';
 
 import './localisation.js';
+import { initProfanityFilter } from './profanityFilter.js';
 import App from './components/App.jsx';
 import store from './slices/index.js';
 import { initSocket, socket } from './socket.js';
@@ -24,6 +25,8 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 injectStyle();
+
+initProfanityFilter();
 
 const defaultChannelId = 1;
 
