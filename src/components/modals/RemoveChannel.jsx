@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import { Modal, Form, Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
 
 import { socket } from '../../socket.js';
 
-const generateOnSubmit = ({ modalInfo, hideModal }, setIsSubmitDisabled) => (e) => {
+const generateOnSubmit = ({ modalInfo, hideModal }, setIsSubmitDisabled, t) => (e) => {
   e.preventDefault();
   setIsSubmitDisabled(true);
   socket.emit('removeChannel', { id: modalInfo.extra.channelId }, () => {
     setIsSubmitDisabled(false);
     hideModal();
+    toast(t('chat.toasts.channelRemoved'));
   });
 };
 
@@ -18,7 +20,7 @@ export default (props) => {
   const { t } = useTranslation();
   const { hideModal } = props;
   const [isSubmitDisabled, setIsSubmitDisabled] = useState(false);
-  const onSubmit = generateOnSubmit(props, setIsSubmitDisabled);
+  const onSubmit = generateOnSubmit(props, setIsSubmitDisabled, t);
 
   return (
     <Modal show centered backdrop onHide={hideModal}>

@@ -3,6 +3,7 @@ import { useHistory, Link } from 'react-router-dom';
 import {
   Container, Row, Col, Card, Form, Button,
 } from 'react-bootstrap';
+import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
 import axios from 'axios';
@@ -46,6 +47,7 @@ const Login = () => {
       } catch (error) {
         if (error.isAxiosError) {
           setAuthFailed(true);
+          toast(t('loginForm.toasts.connectionError'));
         }
       }
     },

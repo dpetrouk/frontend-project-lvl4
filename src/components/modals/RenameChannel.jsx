@@ -3,15 +3,17 @@ import { useSelector } from 'react-redux';
 import { useFormik } from 'formik';
 import { Modal, Form, Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
 
 import getSchema from './getValidationSchema.js';
 import { socket } from '../../socket.js';
 
-const generateOnSubmit = ({ modalInfo, hideModal }, setIsSubmitDisabled) => (values) => {
+const generateOnSubmit = ({ modalInfo, hideModal }, setIsSubmitDisabled, t) => (values) => {
   setIsSubmitDisabled(true);
   socket.emit('renameChannel', { id: modalInfo.extra.channelId, name: values.name }, () => {
     setIsSubmitDisabled(false);
     hideModal();
+    toast(t('chat.toasts.channelRenamed'));
   });
 };
 
@@ -44,7 +46,7 @@ export default (props) => {
   };
 
   const f = useFormik({
-    onSubmit: generateOnSubmit(props, setIsSubmitDisabled),
+    onSubmit: generateOnSubmit(props, setIsSubmitDisabled, t),
     initialValues: { name: channel.name },
     validate,
     validateOnChange: false,

@@ -17,6 +17,9 @@ const resources = {
         errors: {
           authFail: 'Неверное имя пользователя или пароль',
         },
+        toasts: {
+          connectionError: 'Ошибка соединения',
+        },
       },
       signupForm: {
         header: 'Регистрация',
@@ -54,6 +57,11 @@ const resources = {
         send: 'Отправить',
         enterMessage: 'Введите сообщение...',
         newMessage: 'Новое сообщение',
+        toasts: {
+          channelAdded: 'Канал создан',
+          channelRemoved: 'Канал удалён',
+          channelRenamed: 'Канал переименован',
+        },
       },
     },
   },

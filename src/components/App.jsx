@@ -7,6 +7,7 @@ import {
   Redirect,
 } from 'react-router-dom';
 import { Container, Navbar, Button } from 'react-bootstrap';
+import { ToastContainer } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 
 import authContext from '../contexts/index.jsx';
@@ -114,6 +115,7 @@ const App = () => {
             </Route>
           </Switch>
         </div>
+        <ToastContainer />
       </Router>
     </AuthProvider>
   );

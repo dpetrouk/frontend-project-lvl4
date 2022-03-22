@@ -8,6 +8,7 @@ import '../assets/application.scss';
 import ReactDOM from 'react-dom';
 import React from 'react';
 import { Provider } from 'react-redux';
+import { injectStyle } from 'react-toastify/dist/inject-style';
 
 import './localisation.js';
 import App from './components/App.jsx';
@@ -21,6 +22,8 @@ import { addMessage } from './slices/messagesInfoSlice.js';
 if (process.env.NODE_ENV !== 'production') {
   localStorage.debug = 'chat:*';
 }
+
+injectStyle();
 
 const defaultChannelId = 1;
 
