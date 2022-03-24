@@ -9,6 +9,7 @@ import ReactDOM from 'react-dom';
 import React from 'react';
 import { Provider } from 'react-redux';
 import { injectStyle } from 'react-toastify/dist/inject-style';
+import { Provider as RollbarProvider, ErrorBoundary } from '@rollbar/react';
 
 import './localisation.js';
 import { initProfanityFilter } from './profanityFilter.js';
@@ -54,12 +55,21 @@ socket.on('removeChannel', ({ id }) => {
   }
 });
 
+const rollbarConfig = {
+  accessToken: '77231179c88b48748f4207f5ca794629',
+  environment: 'production',
+};
+
 const container = document.querySelector('#chat');
 
 ReactDOM.render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
+  <RollbarProvider config={rollbarConfig}>
+    <ErrorBoundary>
+      <Provider store={store}>
+        <App />
+      </Provider>
+    </ErrorBoundary>
+  </RollbarProvider>,
   container,
 );
 
