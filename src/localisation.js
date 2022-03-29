@@ -10,7 +10,7 @@ const resources = {
       logoutButton: 'Выйти',
       loginForm: {
         header: 'Войти',
-        username: 'Имя пользователя',
+        username: 'Ваш ник',
         password: 'Пароль',
         submit: 'Войти',
         signupLink: 'Регистрация',
