@@ -67,14 +67,17 @@ const resources = {
   },
 };
 
-i18next
-  .use(initReactI18next)
-  .init({
-    resources,
-    lng: defaultLanguage,
-    interpolation: {
-      escapeValue: false,
-    },
-  });
+const initLocalisation = () => {
+  i18next
+    .use(initReactI18next)
+    .init({
+      resources,
+      lng: defaultLanguage,
+      interpolation: {
+        escapeValue: false,
+      },
+    });
+};
 
+export { initLocalisation };
 export default i18next;
