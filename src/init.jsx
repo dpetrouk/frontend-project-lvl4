@@ -10,6 +10,8 @@ import { initSocket } from './socket.js';
 import { initLocalisation } from './localisation.js';
 import { initProfanityFilter } from './profanityFilter.js';
 
+const defaultLanguage = 'ru';
+
 const rollbarConfig = {
   accessToken: '77231179c88b48748f4207f5ca794629',
   environment: process.env.NODE_ENV,
@@ -22,7 +24,7 @@ const init = async (socketClient) => {
 
   initSocket(socketClient);
 
-  initLocalisation();
+  initLocalisation(defaultLanguage);
 
   initProfanityFilter();
 
