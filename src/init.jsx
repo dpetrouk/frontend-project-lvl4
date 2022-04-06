@@ -2,6 +2,7 @@ import ReactDOM from 'react-dom';
 import React from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
 import { injectStyle as injectStyleForToaster } from 'react-toastify/dist/inject-style';
+import Rollbar from 'rollbar';
 import { Provider as RollbarProvider, ErrorBoundary } from '@rollbar/react';
 
 import App from './components/App.jsx';
@@ -14,7 +15,7 @@ const defaultLanguage = 'ru';
 
 const rollbarConfig = {
   accessToken: '77231179c88b48748f4207f5ca794629',
-  environment: process.env.NODE_ENV,
+  environment: 'production', // process.env.NODE_ENV
 };
 
 const init = async (socketClient) => {
@@ -30,10 +31,12 @@ const init = async (socketClient) => {
 
   injectStyleForToaster();
 
+  const rollbar = new Rollbar(rollbarConfig);
+
   const container = document.querySelector('#chat');
 
   ReactDOM.render(
-    <RollbarProvider config={rollbarConfig}>
+    <RollbarProvider instance={rollbar}>
       <ErrorBoundary>
         <ReduxProvider store={store}>
           <App />
