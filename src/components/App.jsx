@@ -17,27 +17,35 @@ import Signup from './Signup.jsx';
 import Home from './Home.jsx';
 import NoMatch from './NoMatch.jsx';
 
-const getUser = () => {
+const setLocalAuth = (token, username) => {
+  localStorage.setItem('user', JSON.stringify({ token, username }));
+};
+
+const getLocalAuth = () => {
   const user = JSON.parse(localStorage.getItem('user'));
-  console.log('getting user');
   return user;
 };
 
+const removeLocalAuth = () => {
+  localStorage.removeItem('user');
+};
+
 const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState(getUser()?.token);
+  const [token, setToken] = useState(getLocalAuth()?.token);
   const [loggedIn, setLoggedIn] = useState(!!token);
-  const [username, setUsername] = useState(getUser()?.username);
+  const [username, setUsername] = useState(getLocalAuth()?.username);
 
   const logIn = (t, u) => {
+    setLocalAuth(t, u);
     setToken(t);
     setUsername(u);
     setLoggedIn(true);
   };
   const logOut = () => {
-    localStorage.removeItem('user');
+    removeLocalAuth();
     setToken('');
-    setLoggedIn(false);
     setUsername('');
+    setLoggedIn(false);
   };
 
   return (

@@ -22,25 +22,21 @@ const Login = () => {
   const auth = useAuth();
   const history = useHistory();
   const [authFailed, setAuthFailed] = useState(false);
-  const formik = useFormik({
+  const f = useFormik({
     initialValues: {
       username: '',
       password: '',
     },
     onSubmit: async (values) => {
       setAuthFailed(false);
-      // block submit button and inputs
       const valid = await validationSchema.isValid(values);
-      // separate client-side and server-side validation?
       if (!valid) {
         setAuthFailed(!valid);
         return;
       }
-      console.log(values);
       try {
-        const response = await axios.post(routes.loginPath(), values);
-        const { token, username } = response.data;
-        console.log(token, username);
+        const { data } = await axios.post(routes.loginPath(), values);
+        const { token, username } = data;
         localStorage.setItem('user', JSON.stringify({ token, username }));
         auth.logIn(token, username);
         history.push('/');
@@ -59,7 +55,7 @@ const Login = () => {
         <Col xs={12} md={8} xxl={6}>
           <Card>
             <Card.Body className="p-5">
-              <Form noValidate onSubmit={formik.handleSubmit} className="col-md-6 mt-3 mb-0">
+              <Form noValidate onSubmit={f.handleSubmit} className="col-md-6 mt-3 mb-0">
                 <h2 className="text-center mb-4">{t('loginForm.header')}</h2>
                 <Form.Group className="form-floating mb-4">
                   <Form.Control
@@ -69,8 +65,8 @@ const Login = () => {
                     placeholder={t('loginForm.username')}
                     id="username"
                     isInvalid={authFailed}
-                    onChange={formik.handleChange}
-                    value={formik.values.username}
+                    onChange={f.handleChange}
+                    value={f.values.username}
                   />
                   <Form.Label>
                     {t('loginForm.username')}
@@ -84,8 +80,8 @@ const Login = () => {
                     type="password"
                     required
                     isInvalid={authFailed}
-                    onChange={formik.handleChange}
-                    value={formik.values.password}
+                    onChange={f.handleChange}
+                    value={f.values.password}
                     placeholder={t('loginForm.password')}
                   />
                   <Form.Label>
