@@ -37,7 +37,6 @@ const Login = () => {
       try {
         const { data } = await axios.post(routes.loginPath(), values);
         const { token, username } = data;
-        localStorage.setItem('user', JSON.stringify({ token, username }));
         auth.logIn(token, username);
         history.push('/');
       } catch (error) {
