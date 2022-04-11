@@ -4,7 +4,7 @@ import {
 } from './slices/channelsInfoSlice.js';
 import { addMessage } from './slices/messagesInfoSlice.js';
 
-let socket;
+let socket; // eslint-disable-line
 
 const defaultChannelId = 1;
 
