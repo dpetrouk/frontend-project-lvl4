@@ -1,34 +1,16 @@
 import React, { useState } from 'react';
 import authContext from '../contexts/index.jsx';
 
-const setLocalAuth = (token, username) => {
-  localStorage.setItem('user', JSON.stringify({ token, username }));
-};
-
-const getLocalAuth = () => {
-  const user = JSON.parse(localStorage.getItem('user'));
-  return user;
-};
-
-const removeLocalAuth = () => {
-  localStorage.removeItem('user');
-};
-
 const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState(getLocalAuth()?.token);
+  const { token, username } = JSON.parse(localStorage.getItem('user')) || {};
   const [loggedIn, setLoggedIn] = useState(!!token);
-  const [username, setUsername] = useState(getLocalAuth()?.username);
 
-  const logIn = (t, u) => {
-    setLocalAuth(t, u);
-    setToken(t);
-    setUsername(u);
+  const logIn = (fetchedToken, fetchedUsername) => {
+    localStorage.setItem('user', JSON.stringify({ token: fetchedToken, username: fetchedUsername }));
     setLoggedIn(true);
   };
   const logOut = () => {
-    removeLocalAuth();
-    setToken('');
-    setUsername('');
+    localStorage.removeItem('user');
     setLoggedIn(false);
   };
 
@@ -37,7 +19,6 @@ const AuthProvider = ({ children }) => {
       loggedIn,
       token,
       username,
-      setUsername,
       logIn,
       logOut,
     }}
