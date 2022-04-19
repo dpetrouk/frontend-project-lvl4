@@ -37,7 +37,6 @@ export const channelsInfoSlice = createSlice({
     },
     removeChannel: (state, action) => {
       const index = state.channels.findIndex(({ id }) => id === action.payload.id);
-      console.log({ index, action });
       if (index !== -1) {
         state.channels.splice(index, 1);
       }
