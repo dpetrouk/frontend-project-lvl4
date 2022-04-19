@@ -74,6 +74,7 @@ const Login = () => {
                     isInvalid={authFailed}
                     onChange={f.handleChange}
                     value={f.values.username}
+                    autoFocus
                   />
                   <Form.Label>
                     {t('loginForm.username')}
