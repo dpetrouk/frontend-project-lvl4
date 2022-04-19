@@ -22,18 +22,26 @@ const Login = () => {
   const auth = useAuth();
   const history = useHistory();
   const [authFailed, setAuthFailed] = useState(false);
+
+  const validate = async (values) => {
+    const errors = {};
+    await validationSchema.validate(values)
+      .catch((err) => {
+        errors[err.path] = err.message;
+        setAuthFailed(true);
+      });
+    return errors;
+  };
+
   const f = useFormik({
     initialValues: {
       username: '',
       password: '',
     },
+    validate,
+    validateOnChange: false,
+    validateOnBlur: false,
     onSubmit: async (values) => {
-      setAuthFailed(false);
-      const valid = await validationSchema.isValid(values);
-      if (!valid) {
-        setAuthFailed(!valid);
-        return;
-      }
       try {
         const { data } = await axios.post(routes.loginPath(), values);
         const { token, username } = data;

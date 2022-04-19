@@ -30,9 +30,9 @@ export default (props) => {
 
   const schema = getSchema();
 
-  const validate = ({ name }) => {
+  const validate = async ({ name }) => {
     const errors = {};
-    schema.validate(name)
+    await schema.validate(name)
       .catch((err) => {
         errors.name = err.message;
         inputRef.current.focus();
