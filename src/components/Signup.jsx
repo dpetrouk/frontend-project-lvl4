@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useFormik } from 'formik';
 import {
@@ -38,11 +38,6 @@ const Signup = () => {
 
   const [isInvalid, setIsInvalid] = useState(false);
 
-  const inputRef = useRef();
-  useEffect(() => {
-    inputRef.current.focus();
-  }, []);
-
   const validationSchema = yup.object({
     username: yup.string().required('signupForm.errors.required').min(3, 'signupForm.errors.usernameLength').max(20, 'signupForm.errors.usernameLength'),
     password: yup.string().required('signupForm.errors.required').min(6, 'signupForm.errors.passwordLength'),
@@ -81,7 +76,7 @@ const Signup = () => {
                     onBlur={f.handleBlur}
                     onChange={f.handleChange}
                     value={f.values.username}
-                    ref={inputRef}
+                    autoFocus
                   />
                   <Form.Label>
                     {t('signupForm.username')}
