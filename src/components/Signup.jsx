@@ -13,15 +13,10 @@ import useAuth from '../hooks/index.jsx';
 
 const generateOnSubmit = ({ history, auth, setIsInvalid }) => async (values) => {
   try {
-    console.log({ values });
-    const response = await axios.post(routes.signupPath(), values);
-    const { token, username } = response.data;
-    console.log(token, username);
-    localStorage.setItem('user', JSON.stringify({ token, username }));
-    auth.logIn(token, username);
+    const { data } = await axios.post(routes.signupPath(), values);
+    auth.logIn(data.token, data.username);
     history.push('/');
   } catch (error) {
-    console.log({ error });
     if (error.isAxiosError) {
       const { status } = error.response;
       if (status === 409) {
