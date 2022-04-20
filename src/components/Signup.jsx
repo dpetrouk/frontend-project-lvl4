@@ -50,8 +50,6 @@ const Signup = () => {
     validateOnChange: false,
   });
 
-  console.log({ f });
-
   return (
     <Container fluid className="h-100">
       <Row className="justify-content-center align-content-center h-100">
