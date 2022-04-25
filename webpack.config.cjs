@@ -16,15 +16,14 @@ module.exports = {
   },
   devServer: {
     compress: true,
-    port: 8080,
+    port: 8090,
     host: '0.0.0.0',
-    publicPath: '/assets/',
+    // publicPath: '/assets/',
     historyApiFallback: true,
   },
   plugins: [
     new MiniCssExtractPlugin(),
   ],
-  devtool: 'source-map',
   module: {
     rules: [
       {
@@ -40,11 +39,6 @@ module.exports = {
           { loader: 'postcss-loader' },
           { loader: 'sass-loader' },
         ],
-      },
-      {
-        test: /\.js$/,
-        enforce: 'pre',
-        use: ['source-map-loader'],
       },
     ],
   },
