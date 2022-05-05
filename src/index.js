@@ -8,4 +8,4 @@ import '../assets/application.scss';
 
 import init from './init.jsx';
 
-init(socketClient);
+export default () => init(socketClient);
