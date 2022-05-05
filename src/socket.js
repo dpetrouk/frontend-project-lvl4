@@ -33,7 +33,8 @@ const initSocketHandlers = () => {
 };
 
 const initSocket = (socketClient) => {
-  socket = socketClient();
+  console.log('! socketClient: ', socketClient);
+  socket = socketClient;
 
   initSocketHandlers();
 };
