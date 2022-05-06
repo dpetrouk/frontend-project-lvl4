@@ -8,15 +8,15 @@ import '../assets/application.scss';
 
 import init from './init.jsx';
 
-const runApp = async () => {
+const runApp = () => {
   const container = document.querySelector('#chat');
 
-  const app = await init(socketClient());
+  const InitiatedApp = init(socketClient());
 
   ReactDOM.render(
-    app,
+    InitiatedApp,
     container,
   );
-};
+}
 
 runApp();

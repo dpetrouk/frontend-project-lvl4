@@ -18,7 +18,7 @@ const rollbarConfig = {
   environment: 'production', // process.env.NODE_ENV
 };
 
-const init = async (socketClient) => {
+const init = (socketClient) => {
   if (process.env.NODE_ENV !== 'production') {
     localStorage.debug = 'chat:*';
   }
