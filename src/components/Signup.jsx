@@ -71,7 +71,7 @@ const Signup = () => {
                     value={f.values.username}
                     autoFocus
                   />
-                  <Form.Label>
+                  <Form.Label htmlFor="username">
                     {t('signupForm.username')}
                   </Form.Label>
                   <Form.Control.Feedback type="invalid" tooltip>{t(f.errors.username)}</Form.Control.Feedback>
@@ -89,7 +89,7 @@ const Signup = () => {
                     value={f.values.password}
                     placeholder={t('signupForm.password')}
                   />
-                  <Form.Label>
+                  <Form.Label htmlFor="password">
                     {t('signupForm.password')}
                   </Form.Label>
                   <Form.Control.Feedback type="invalid" tooltip>{t(f.errors.password)}</Form.Control.Feedback>
@@ -109,7 +109,7 @@ const Signup = () => {
                     value={f.values.passwordConfirmation}
                     placeholder={t('signupForm.confirmPassword')}
                   />
-                  <Form.Label>
+                  <Form.Label htmlFor="passwordConfirmation">
                     {t('signupForm.confirmPassword')}
                   </Form.Label>
                   <Form.Control.Feedback type="invalid" tooltip>{t(f.errors.passwordConfirmation || 'signupForm.errors.userAlreadyExists')}</Form.Control.Feedback>

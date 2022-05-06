@@ -61,6 +61,7 @@ export default (props) => {
       <Modal.Body>
         <Form onSubmit={f.handleSubmit} noValidate>
           <Form.Group className="mb-3">
+            <Form.Label visuallyHidden htmlFor="name">{t('chat.modals.channelName')}</Form.Label>
             <Form.Control
               ref={inputRef}
               onChange={f.handleChange}

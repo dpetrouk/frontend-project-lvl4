@@ -76,7 +76,7 @@ const Login = () => {
                     value={f.values.username}
                     autoFocus
                   />
-                  <Form.Label>
+                  <Form.Label htmlFor="username">
                     {t('loginForm.username')}
                   </Form.Label>
                 </Form.Group>
@@ -92,7 +92,7 @@ const Login = () => {
                     value={f.values.password}
                     placeholder={t('loginForm.password')}
                   />
-                  <Form.Label>
+                  <Form.Label htmlFor="password">
                     {t('loginForm.password')}
                   </Form.Label>
                   <Form.Control.Feedback type="invalid" className="invalid-tooltip">{t('loginForm.errors.authFail')}</Form.Control.Feedback>
