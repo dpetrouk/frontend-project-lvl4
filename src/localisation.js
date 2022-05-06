@@ -13,7 +13,7 @@ const resources = {
         submit: 'Войти',
         signupLink: 'Регистрация',
         errors: {
-          authFail: 'Неверное имя пользователя или пароль',
+          authFail: 'Неверные имя пользователя или пароль',
         },
         toasts: {
           connectionError: 'Ошибка соединения',
