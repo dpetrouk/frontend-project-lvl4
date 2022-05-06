@@ -11,7 +11,7 @@ import init from './init.jsx';
 const runApp = async () => {
   const container = document.querySelector('#chat');
 
-  const app = await init(socketClient);
+  const app = await init(socketClient());
 
   ReactDOM.render(
     app,
