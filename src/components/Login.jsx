@@ -25,6 +25,7 @@ const Login = () => {
 
   const validate = async (values) => {
     const errors = {};
+    setAuthFailed(false);
     await validationSchema.validate(values)
       .catch((err) => {
         errors[err.path] = err.message;
@@ -48,9 +49,11 @@ const Login = () => {
         auth.logIn(token, username);
         history.push('/');
       } catch (error) {
-        if (error.isAxiosError) {
-          setAuthFailed(true);
+        if (!error.response) {
           toast(t('loginForm.toasts.connectionError'));
+        }
+        if (error.response.status === 401) {
+          setAuthFailed(true);
         }
       }
     },
@@ -95,7 +98,7 @@ const Login = () => {
                   <Form.Label htmlFor="password">
                     {t('loginForm.password')}
                   </Form.Label>
-                  <Form.Control.Feedback type="invalid" className="invalid-tooltip">{t('loginForm.errors.authFail')}</Form.Control.Feedback>
+                  {authFailed && <Form.Control.Feedback type="invalid" className="invalid-tooltip">{t('loginForm.errors.authFail')}</Form.Control.Feedback>}
                 </Form.Group>
                 <Button variant="outline-primary" type="submit" className="w-100 mb-3">{t('loginForm.submit')}</Button>
               </Form>
