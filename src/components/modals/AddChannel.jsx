@@ -17,7 +17,7 @@ const generateOnSubmit = ({ selectChannel, hideModal }, setIsSubmitDisabled, t) 
   });
 };
 
-export default (props) => {
+const AddChannel = (props) => {
   const { t } = useTranslation();
   const { hideModal } = props;
   const [isInvalid, setIsInvalid] = useState(false);
@@ -81,3 +81,5 @@ export default (props) => {
     </Modal>
   );
 };
+
+export default AddChannel;

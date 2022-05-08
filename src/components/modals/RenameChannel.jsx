@@ -17,7 +17,7 @@ const generateOnSubmit = ({ modalInfo, hideModal }, setIsSubmitDisabled, t) => (
   });
 };
 
-export default (props) => {
+const RenameChannel = (props) => {
   const { t } = useTranslation();
   const { hideModal, modalInfo } = props;
   const { channelId } = modalInfo.extra;
@@ -85,3 +85,5 @@ export default (props) => {
     </Modal>
   );
 };
+
+export default RenameChannel;

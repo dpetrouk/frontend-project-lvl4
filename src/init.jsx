@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
 import { injectStyle as injectStyleForToaster } from 'react-toastify/dist/inject-style';

@@ -45,7 +45,7 @@ const SendButton = ({ isSendDisabled }) => {
 };
 
 const ChannelButton = ({
-  currentChannelId, selectChannel, id, name, removable
+  currentChannelId, selectChannel, id, name, removable,
 }) => {
   const generalClassNames = cn('w-100', 'rounded-0', 'text-start');
   const removableChannelClassNames = cn(generalClassNames, 'text-truncate');
@@ -90,14 +90,15 @@ const Channels = ({
             </Dropdown.Menu>
           </Dropdown>
         )
-        : <ChannelButton
+        : (
+          <ChannelButton
             currentChannelId={currentChannelId}
             selectChannel={selectChannel}
             id={id}
             name={name}
             removable={removable}
           />
-      }
+        )}
     </Nav.Item>
   ));
 };
@@ -213,7 +214,12 @@ const Home = () => {
               <AddChannelButton showModal={showModal} />
             </div>
             <Nav as="ul" variant="pills" fill className="flex-column px-2">
-              <Channels channels={channels} currentChannelId={currentChannelId} selectChannel={selectChannel} showModal={showModal} />
+              <Channels
+                channels={channels}
+                currentChannelId={currentChannelId}
+                selectChannel={selectChannel}
+                showModal={showModal}
+              />
             </Nav>
           </Col>
           <Col className="p-0 h-100">

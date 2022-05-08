@@ -15,7 +15,7 @@ const generateOnSubmit = ({ modalInfo, hideModal }, setIsSubmitDisabled, t) => (
   });
 };
 
-export default (props) => {
+const RemoveChannel = (props) => {
   console.log('removing channel');
   const { t } = useTranslation();
   const { hideModal } = props;
@@ -39,3 +39,5 @@ export default (props) => {
     </Modal>
   );
 };
+
+export default RemoveChannel;

@@ -17,6 +17,6 @@ const runApp = () => {
     InitiatedApp,
     container,
   );
-}
+};
 
 runApp();
