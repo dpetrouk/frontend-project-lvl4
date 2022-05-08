@@ -40,6 +40,7 @@ const resources = {
         messages_few: '{{count}} сообщения',
         messages_many: '{{count}} сообщений',
         channel: {
+          manage: 'Управление каналом',
           remove: 'Удалить',
           rename: 'Переименовать',
         },

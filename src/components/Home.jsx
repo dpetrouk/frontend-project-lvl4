@@ -74,7 +74,9 @@ const renderChannels = ({
               <Dropdown.Toggle
                 split
                 variant={id === currentChannelId ? 'secondary' : null}
-              />
+              >
+                <span className="visually-hidden">{t('chat.channel.manage')}</span>
+              </Dropdown.Toggle>
               <Dropdown.Menu>
                 <Dropdown.Item onClick={() => showModal('removeChannel', { channelId: id })}>{t('chat.channel.remove')}</Dropdown.Item>
                 <Dropdown.Item onClick={() => showModal('renameChannel', { channelId: id })}>{t('chat.channel.rename')}</Dropdown.Item>
