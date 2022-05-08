@@ -28,6 +28,9 @@ settings:
 rules:
   import/extensions: 0
   react/prop-types: 0
+  react/function-component-definition:
+    - 2
+    - namedComponents: "arrow-function"
   no-console: 0
   functional/no-conditional-statement: 0
   functional/no-expression-statement: 0
@@ -37,4 +40,4 @@ rules:
   functional/no-throw-statement: 0
   jsx-a11y/label-has-associated-control:
     - 2
-    - assert: "either"
+    - assert: either
