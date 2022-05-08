@@ -13,7 +13,7 @@ import { openModal, closeModal } from '../slices/modalSlice.js';
 import getModal from './modals/index.js';
 import { profanityFilter } from '../profanityFilter.js';
 
-const renderAddChannelButton = ({ showModal }) => (
+const AddChannelButton = ({ showModal }) => (
   <Button
     onClick={() => showModal('addChannel')}
     variant={null}
@@ -27,7 +27,7 @@ const renderAddChannelButton = ({ showModal }) => (
   </Button>
 );
 
-const renderSendButton = ({ isSendDisabled }) => {
+const SendButton = ({ isSendDisabled }) => {
   const { t } = useTranslation();
   return (
     <Button
@@ -44,52 +44,65 @@ const renderSendButton = ({ isSendDisabled }) => {
   );
 };
 
-const renderChannels = ({
+const ChannelButton = ({
+  currentChannelId, selectChannel, id, name, removable
+}) => {
+  const generalClassNames = cn('w-100', 'rounded-0', 'text-start');
+  const removableChannelClassNames = cn(generalClassNames, 'text-truncate');
+  return (
+    <Button
+      onClick={() => selectChannel(id)}
+      variant={id === currentChannelId ? 'secondary' : null}
+      className={removable ? removableChannelClassNames : generalClassNames}
+      type="button"
+    >
+      <span className="me-1">#</span>
+      {name}
+    </Button>
+  );
+};
+
+const Channels = ({
   channels, currentChannelId, selectChannel, showModal,
 }) => {
   const { t } = useTranslation();
-  return channels.map(({ id, name, removable }) => {
-    const renderChannelButton = () => {
-      const generalClassNames = cn('w-100', 'rounded-0', 'text-start');
-      const removableChannelClassNames = cn(generalClassNames, 'text-truncate');
-      return (
-        <Button
-          onClick={() => selectChannel(id)}
-          variant={id === currentChannelId ? 'secondary' : null}
-          className={removable ? removableChannelClassNames : generalClassNames}
-          type="button"
-        >
-          <span className="me-1">#</span>
-          {name}
-        </Button>
-      );
-    };
-
-    return (
-      <Nav.Item as="li" key={id} className="w-100">
-        {removable
-          ? (
-            <Dropdown className="d-flex btn-group">
-              {renderChannelButton()}
-              <Dropdown.Toggle
-                split
-                variant={id === currentChannelId ? 'secondary' : null}
-              >
-                <span className="visually-hidden">{t('chat.channel.manage')}</span>
-              </Dropdown.Toggle>
-              <Dropdown.Menu>
-                <Dropdown.Item onClick={() => showModal('removeChannel', { channelId: id })}>{t('chat.channel.remove')}</Dropdown.Item>
-                <Dropdown.Item onClick={() => showModal('renameChannel', { channelId: id })}>{t('chat.channel.rename')}</Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
-          )
-          : renderChannelButton()}
-      </Nav.Item>
-    );
-  });
+  return channels.map(({ id, name, removable }) => (
+    <Nav.Item as="li" key={id} className="w-100">
+      {removable
+        ? (
+          <Dropdown className="d-flex btn-group">
+            <ChannelButton
+              currentChannelId={currentChannelId}
+              selectChannel={selectChannel}
+              id={id}
+              name={name}
+              removable={removable}
+            />
+            <Dropdown.Toggle
+              split
+              variant={id === currentChannelId ? 'secondary' : null}
+            >
+              <span className="visually-hidden">{t('chat.channel.manage')}</span>
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item onClick={() => showModal('removeChannel', { channelId: id })}>{t('chat.channel.remove')}</Dropdown.Item>
+              <Dropdown.Item onClick={() => showModal('renameChannel', { channelId: id })}>{t('chat.channel.rename')}</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        )
+        : <ChannelButton
+            currentChannelId={currentChannelId}
+            selectChannel={selectChannel}
+            id={id}
+            name={name}
+            removable={removable}
+          />
+      }
+    </Nav.Item>
+  ));
 };
 
-const renderMessages = (messages) => messages.map(({ username, id, body }) => (
+const Messages = ({ messages }) => messages.map(({ username, id, body }) => (
   <div key={id} className="text-break mb-2">
     <strong>{username}</strong>
     <span>: </span>
@@ -97,7 +110,7 @@ const renderMessages = (messages) => messages.map(({ username, id, body }) => (
   </div>
 ));
 
-const renderMessageInput = ({
+const MessageInput = ({
   message, handleMessageInput, sendMessage, messageInputRef, isSendDisabled,
 }) => {
   const { t } = useTranslation();
@@ -113,14 +126,14 @@ const renderMessageInput = ({
             aria-label={t('chat.newMessage')}
             className="border-0 p-0 ps-2"
           />
-          {renderSendButton({ isSendDisabled })}
+          <SendButton isSendDisabled={isSendDisabled} />
         </InputGroup>
       </form>
     </div>
   );
 };
 
-const renderModal = ({ modalInfo, hideModal, selectChannel }) => {
+const Modal = ({ modalInfo, hideModal, selectChannel }) => {
   if (!modalInfo.isOpened) {
     return null;
   }
@@ -197,12 +210,10 @@ const Home = () => {
           <Col xs={4} md={2} className="border-end pt-5 px-0 bg-light">
             <div className="d-flex justify-content-between mb-2 ps-4 pe-2">
               <span>{t('chat.channels')}</span>
-              {renderAddChannelButton({ showModal })}
+              <AddChannelButton showModal={showModal} />
             </div>
             <Nav as="ul" variant="pills" fill className="flex-column px-2">
-              {renderChannels({
-                channels, currentChannelId, selectChannel, showModal,
-              })}
+              <Channels channels={channels} currentChannelId={currentChannelId} selectChannel={selectChannel} showModal={showModal} />
             </Nav>
           </Col>
           <Col className="p-0 h-100">
@@ -216,16 +227,24 @@ const Home = () => {
                 <span className="text-muted">{t('chat.messages', { count: currentChannelMessages.length })}</span>
               </div>
               <div className="overflow-auto px-5">
-                {renderMessages(currentChannelMessages)}
+                <Messages messages={currentChannelMessages} />
               </div>
-              {renderMessageInput({
-                message, handleMessageInput, sendMessage, messageInputRef, isSendDisabled,
-              })}
+              <MessageInput
+                message={message}
+                handleMessageInput={handleMessageInput}
+                sendMessage={sendMessage}
+                messageInputRef={messageInputRef}
+                isSendDisabled={isSendDisabled}
+              />
             </div>
           </Col>
         </Row>
       </Container>
-      {renderModal({ modalInfo, hideModal, selectChannel })}
+      <Modal
+        modalInfo={modalInfo}
+        hideModal={hideModal}
+        selectChannel={selectChannel}
+      />
     </>
   );
 };
