@@ -52,6 +52,12 @@ const resources = {
           addChannel: 'Добавить канал',
           removeChannel: 'Удалить канал',
           renameChannel: 'Переименовать канал',
+          confirm: 'Уверены?',
+          errors: {
+            required: 'Обязательное поле',
+            channelNameLength: 'От 3 до 20 символов',
+            unique: 'Должно быть уникальным',
+          },
         },
         send: 'Отправить',
         enterMessage: 'Введите сообщение...',

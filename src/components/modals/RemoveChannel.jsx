@@ -29,7 +29,7 @@ const RemoveChannel = (props) => {
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={onSubmit}>
-          <p className="lead">Уверены?</p>
+          <p className="lead">{t('chat.modals.confirm')}</p>
           <div className="d-flex justify-content-end">
             <Button onClick={hideModal} variant="secondary" className="me-2">{t('chat.modals.cancel')}</Button>
             <Button type="submit" variant="danger" disabled={isSubmitDisabled}>{t('chat.modals.remove')}</Button>

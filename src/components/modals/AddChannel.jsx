@@ -69,7 +69,7 @@ const AddChannel = (props) => {
             />
             <Form.Label visuallyHidden htmlFor="name">{t('chat.modals.channelName')}</Form.Label>
             <Form.Control.Feedback type="invalid">
-              {f.errors.name}
+              {t(f.errors.name)}
             </Form.Control.Feedback>
           </Form.Group>
           <div className="d-flex justify-content-end">
