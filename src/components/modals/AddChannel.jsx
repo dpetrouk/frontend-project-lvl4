@@ -52,7 +52,7 @@ const AddChannel = (props) => {
   return (
     <Modal show centered backdrop onHide={hideModal}>
       <Modal.Header closeButton>
-        <Modal.Title>Добавить канал</Modal.Title>
+        <Modal.Title>{t('chat.modals.addChannel')}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={f.handleSubmit} noValidate>
