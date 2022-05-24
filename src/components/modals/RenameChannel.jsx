@@ -36,6 +36,7 @@ const RenameChannel = (props) => {
 
   const validate = async ({ name }) => {
     const errors = {};
+    setIsInvalid(false);
     await schema.validate(name)
       .catch((err) => {
         errors.name = err.message;
