@@ -1,18 +1,9 @@
-import store from './slices/index.js';
 import {
-  setCurrentChannel, addChannel, renameChannel, removeChannel,
+  addChannel, renameChannel, removeChannel,
 } from './slices/channelsInfoSlice.js';
 import { addMessage } from './slices/messagesInfoSlice.js';
 
 let socket; // eslint-disable-line
-
-const defaultChannelId = 1;
-
-const isCurrentChannel = (id) => {
-  const state = store.getState();
-  const { currentChannelId } = state.channelsInfo;
-  return currentChannelId === id;
-};
 
 const initSocketHandlers = () => {
   socket.on('newMessage', (messageWithId) => {
@@ -24,11 +15,8 @@ const initSocketHandlers = () => {
   socket.on('renameChannel', (channel) => {
     store.dispatch(renameChannel(channel));
   });
-  socket.on('removeChannel', ({ id }) => {
-    store.dispatch(removeChannel({ id }));
-    if (isCurrentChannel(id)) {
-      store.dispatch(setCurrentChannel({ channelId: defaultChannelId }));
-    }
+  socket.on('removeChannel', (channel) => {
+    store.dispatch(removeChannel(channel));
   });
 };
 

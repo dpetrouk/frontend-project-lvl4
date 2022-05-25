@@ -5,6 +5,8 @@ import axios from 'axios';
 
 import routes from '../routes.js';
 
+const defaultChannelId = 1;
+
 const setInitialState = createAsyncThunk(
   'channelsInfo/setInitialState',
   async (token) => {
@@ -16,7 +18,7 @@ const setInitialState = createAsyncThunk(
 
 const initialState = {
   channels: [],
-  currentChannelId: 1,
+  currentChannelId: defaultChannelId,
 };
 
 export const channelsInfoSlice = createSlice({
@@ -36,9 +38,13 @@ export const channelsInfoSlice = createSlice({
       }
     },
     removeChannel: (state, action) => {
-      const index = state.channels.findIndex(({ id }) => id === action.payload.id);
+      const removedChannelId = action.payload.id;
+      const index = state.channels.findIndex(({ id }) => id === removedChannelId);
       if (index !== -1) {
         state.channels.splice(index, 1);
+      }
+      if (state.currentChannelId === removedChannelId) {
+        state.currentChannelId = defaultChannelId;
       }
     },
   },
