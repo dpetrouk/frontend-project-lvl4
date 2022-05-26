@@ -12,15 +12,18 @@ import { initProfanityFilter } from './profanityFilter.js';
 
 const defaultLanguage = 'ru';
 
-const rollbarConfig = {
-  accessToken: '77231179c88b48748f4207f5ca794629',
-  environment: 'production', // process.env.NODE_ENV
-};
-
 const init = (socketClient) => {
   if (process.env.NODE_ENV !== 'production') {
     localStorage.debug = 'chat:*';
   }
+
+  const rollbarConfig = {
+    accessToken: process.env.ROLLBAR_ACCESS_TOKEN,
+    environment: process.env.NODE_ENV,
+  };
+
+  console.log('ROLLBAR_ACCESS_TOKEN', process.env.ROLLBAR_ACCESS_TOKEN);
+  console.log('NODE_ENV', process.env.NODE_ENV);
 
   initSocket(socketClient);
 
