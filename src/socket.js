@@ -1,3 +1,5 @@
+import store from './slices/index.js';
+
 import {
   addChannel, renameChannel, removeChannel,
 } from './slices/channelsInfoSlice.js';
