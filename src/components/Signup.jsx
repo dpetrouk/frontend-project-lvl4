@@ -33,10 +33,24 @@ const Signup = () => {
 
   const [isInvalid, setIsInvalid] = useState(false);
 
+  yup.setLocale({
+    mixed: {
+      required: 'signupForm.errors.required',
+      oneOf: 'signupForm.errors.confirmPasswordMatch',
+    },
+    string: {
+      min: ({ path }) => ({
+        username: 'signupForm.errors.usernameLength',
+        password: 'signupForm.errors.passwordLength',
+      }[path]),
+      max: 'signupForm.errors.usernameLength',
+    },
+  });
+
   const validationSchema = yup.object({
-    username: yup.string().required('signupForm.errors.required').min(3, 'signupForm.errors.usernameLength').max(20, 'signupForm.errors.usernameLength'),
-    password: yup.string().required('signupForm.errors.required').min(6, 'signupForm.errors.passwordLength'),
-    passwordConfirmation: yup.string().oneOf([yup.ref('password')], 'signupForm.errors.confirmPasswordMatch'),
+    username: yup.string().required().min(3).max(20),
+    password: yup.string().required().min(6),
+    passwordConfirmation: yup.string().oneOf([yup.ref('password')]),
   });
 
   const f = useFormik({
