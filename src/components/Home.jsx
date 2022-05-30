@@ -8,7 +8,7 @@ import cn from 'classnames';
 
 import { socket } from '../socket.js';
 import useAuth from '../hooks/index.jsx';
-import { setInitialState, setCurrentChannel } from '../slices/channelsInfoSlice.js';
+import { fetchInitialState, setCurrentChannel } from '../slices/channelsInfoSlice.js';
 import { openModal, closeModal } from '../slices/modalSlice.js';
 import getModal from './modals/index.js';
 import { profanityFilter } from '../profanityFilter.js';
@@ -164,7 +164,7 @@ const Home = () => {
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    dispatch(setInitialState(token));
+    dispatch(fetchInitialState(token));
   }, []);
 
   const currentChannelId = useSelector((state) => state.channelsInfo.currentChannelId);

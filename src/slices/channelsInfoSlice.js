@@ -7,8 +7,8 @@ import routes from '../routes.js';
 
 const defaultChannelId = 1;
 
-const setInitialState = createAsyncThunk(
-  'channelsInfo/setInitialState',
+const fetchInitialState = createAsyncThunk(
+  'channelsInfo/fetchInitialState',
   async (token) => {
     const requestConfig = { headers: { Authorization: `Bearer ${token}` } };
     const { data } = await axios.get(routes.data(), requestConfig);
@@ -50,7 +50,7 @@ export const channelsInfoSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(setInitialState.fulfilled, (state, action) => {
+      .addCase(fetchInitialState.fulfilled, (state, action) => {
         state.channels = action.payload.channels;
         state.currentChannelId = action.payload.currentChannelId;
       });
@@ -61,6 +61,6 @@ export const {
   setCurrentChannel, addChannel, renameChannel, removeChannel,
 } = channelsInfoSlice.actions;
 
-export { setInitialState };
+export { fetchInitialState };
 
 export default channelsInfoSlice.reducer;
