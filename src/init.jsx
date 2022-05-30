@@ -22,9 +22,6 @@ const init = (socketClient) => {
     environment: process.env.NODE_ENV,
   };
 
-  console.log('ROLLBAR_ACCESS_TOKEN', process.env.ROLLBAR_ACCESS_TOKEN);
-  console.log('NODE_ENV', process.env.NODE_ENV);
-
   initSocket(socketClient);
 
   initLocalisation(defaultLanguage);
