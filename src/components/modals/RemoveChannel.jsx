@@ -5,22 +5,21 @@ import { toast } from 'react-toastify';
 
 import { socket } from '../../socket.js';
 
-const generateOnSubmit = ({ modalInfo, hideModal }, setIsSubmitDisabled, t) => (e) => {
-  e.preventDefault();
-  setIsSubmitDisabled(true);
-  socket.emit('removeChannel', { id: modalInfo.extra.channelId }, () => {
-    setIsSubmitDisabled(false);
-    hideModal();
-    toast(t('chat.toasts.channelRemoved'));
-  });
-};
-
 const RemoveChannel = (props) => {
   console.log('removing channel');
   const { t } = useTranslation();
-  const { hideModal } = props;
+  const { hideModal, modalInfo } = props;
   const [isSubmitDisabled, setIsSubmitDisabled] = useState(false);
-  const onSubmit = generateOnSubmit(props, setIsSubmitDisabled, t);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setIsSubmitDisabled(true);
+    socket.emit('removeChannel', { id: modalInfo.extra.channelId }, () => {
+      setIsSubmitDisabled(false);
+      hideModal();
+      toast(t('chat.toasts.channelRemoved'));
+    });
+  };
 
   return (
     <Modal show centered backdrop onHide={hideModal}>
@@ -28,7 +27,7 @@ const RemoveChannel = (props) => {
         <Modal.Title>{t('chat.modals.removeChannel')}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form onSubmit={onSubmit}>
+        <Form onSubmit={handleSubmit}>
           <p className="lead">{t('chat.modals.confirm')}</p>
           <div className="d-flex justify-content-end">
             <Button onClick={hideModal} variant="secondary" className="me-2">{t('chat.modals.cancel')}</Button>

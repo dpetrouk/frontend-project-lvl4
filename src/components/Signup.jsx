@@ -11,21 +11,6 @@ import { useTranslation } from 'react-i18next';
 import routes from '../routes.js';
 import useAuth from '../hooks/index.jsx';
 
-const generateOnSubmit = ({ history, auth, setIsInvalid }) => async (values) => {
-  try {
-    const { data } = await axios.post(routes.signupPath(), values);
-    auth.logIn(data.token, data.username);
-    history.push('/');
-  } catch (error) {
-    if (error.isAxiosError) {
-      const { status } = error.response;
-      if (status === 409) {
-        setIsInvalid(true);
-      }
-    }
-  }
-};
-
 const Signup = () => {
   const { t } = useTranslation();
   const history = useHistory();
@@ -53,8 +38,23 @@ const Signup = () => {
     passwordConfirmation: yup.string().oneOf([yup.ref('password')]),
   });
 
+  const handleSubmit = async (values) => {
+    try {
+      const { data } = await axios.post(routes.signupPath(), values);
+      auth.logIn(data.token, data.username);
+      history.push('/');
+    } catch (error) {
+      if (error.isAxiosError) {
+        const { status } = error.response;
+        if (status === 409) {
+          setIsInvalid(true);
+        }
+      }
+    }
+  };
+
   const f = useFormik({
-    onSubmit: generateOnSubmit({ history, auth, setIsInvalid }),
+    onSubmit: handleSubmit,
     initialValues: {
       username: '',
       password: '',

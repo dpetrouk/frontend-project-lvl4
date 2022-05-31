@@ -8,15 +8,6 @@ import { toast } from 'react-toastify';
 import getSchema from './getValidationSchema.js';
 import { socket } from '../../socket.js';
 
-const generateOnSubmit = ({ modalInfo, hideModal }, setIsSubmitDisabled, t) => (values) => {
-  setIsSubmitDisabled(true);
-  socket.emit('renameChannel', { id: modalInfo.extra.channelId, name: values.name }, () => {
-    setIsSubmitDisabled(false);
-    hideModal();
-    toast(t('chat.toasts.channelRenamed'));
-  });
-};
-
 const RenameChannel = (props) => {
   const { t } = useTranslation();
   const { hideModal, modalInfo } = props;
@@ -46,8 +37,17 @@ const RenameChannel = (props) => {
     return errors;
   };
 
+  const handleSubmit = (values) => {
+    setIsSubmitDisabled(true);
+    socket.emit('renameChannel', { id: modalInfo.extra.channelId, name: values.name }, () => {
+      setIsSubmitDisabled(false);
+      hideModal();
+      toast(t('chat.toasts.channelRenamed'));
+    });
+  };
+
   const f = useFormik({
-    onSubmit: generateOnSubmit(props, setIsSubmitDisabled, t),
+    onSubmit: handleSubmit,
     initialValues: { name: channel.name },
     validate,
     validateOnChange: false,

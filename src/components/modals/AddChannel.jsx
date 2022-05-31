@@ -7,19 +7,9 @@ import { toast } from 'react-toastify';
 import getSchema from './getValidationSchema.js';
 import { socket } from '../../socket.js';
 
-const generateOnSubmit = ({ selectChannel, hideModal }, setIsSubmitDisabled, t) => (values) => {
-  setIsSubmitDisabled(true);
-  socket.emit('newChannel', { name: values.name }, (response) => {
-    setIsSubmitDisabled(false);
-    selectChannel(response.data.id);
-    hideModal();
-    toast(t('chat.toasts.channelAdded'));
-  });
-};
-
 const AddChannel = (props) => {
   const { t } = useTranslation();
-  const { hideModal } = props;
+  const { hideModal, selectChannel } = props;
   const [isInvalid, setIsInvalid] = useState(false);
   const [isSubmitDisabled, setIsSubmitDisabled] = useState(false);
 
@@ -42,8 +32,18 @@ const AddChannel = (props) => {
     return errors;
   };
 
+  const handleSubmit = (values) => {
+    setIsSubmitDisabled(true);
+    socket.emit('newChannel', { name: values.name }, (response) => {
+      setIsSubmitDisabled(false);
+      selectChannel(response.data.id);
+      hideModal();
+      toast(t('chat.toasts.channelAdded'));
+    });
+  };
+
   const f = useFormik({
-    onSubmit: generateOnSubmit(props, setIsSubmitDisabled, t),
+    onSubmit: handleSubmit,
     initialValues: { name: '' },
     validate,
     validateOnChange: false,
