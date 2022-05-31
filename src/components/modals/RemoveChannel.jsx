@@ -3,7 +3,7 @@ import { Modal, Form, Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
-import { socket } from '../../socket.js';
+import { emit } from '../../socket.js';
 
 const RemoveChannel = (props) => {
   console.log('removing channel');
@@ -14,7 +14,8 @@ const RemoveChannel = (props) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setIsSubmitDisabled(true);
-    socket.emit('removeChannel', { id: modalInfo.extra.channelId }, () => {
+    const removedChannel = { id: modalInfo.extra.channelId };
+    emit.removeChannel(removedChannel, () => {
       setIsSubmitDisabled(false);
       hideModal();
       toast(t('chat.toasts.channelRemoved'));

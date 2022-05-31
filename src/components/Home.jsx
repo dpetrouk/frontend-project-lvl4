@@ -6,7 +6,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import cn from 'classnames';
 
-import { socket } from '../socket.js';
+import { emit } from '../socket.js';
 import useAuth from '../hooks/index.jsx';
 import { fetchInitialState, setCurrentChannel } from '../slices/channelsInfoSlice.js';
 import { openModal, closeModal } from '../slices/modalSlice.js';
@@ -161,7 +161,7 @@ const Home = () => {
     dispatch(setCurrentChannel({ channelId }));
   };
 
-  const [message, setMessage] = useState('');
+  const [messageBody, setMessageBody] = useState('');
 
   useEffect(() => {
     dispatch(fetchInitialState(token));
@@ -184,8 +184,9 @@ const Home = () => {
   const sendMessage = (e) => {
     e.preventDefault();
     setIsSendDisabled(true);
-    socket.emit('newMessage', { body: message, channelId: currentChannelId, username }, () => {
-      setMessage('');
+    const message = { body: messageBody, channelId: currentChannelId, username };
+    emit.newMessage(message, () => {
+      setMessageBody('');
       setIsSendDisabled(false);
     });
   };
@@ -196,7 +197,7 @@ const Home = () => {
 
   const handleMessageInput = (e) => {
     setIsSendDisabled(e.target.value === '');
-    setMessage(e.target.value);
+    setMessageBody(e.target.value);
   };
 
   const messageInputRef = React.createRef(null);
@@ -236,7 +237,7 @@ const Home = () => {
                 <Messages messages={currentChannelMessages} />
               </div>
               <MessageInput
-                message={message}
+                message={messageBody}
                 handleMessageInput={handleMessageInput}
                 sendMessage={sendMessage}
                 messageInputRef={messageInputRef}

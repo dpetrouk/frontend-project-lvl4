@@ -28,4 +28,11 @@ const initSocket = (socketClient) => {
   initSocketHandlers();
 };
 
-export { socket, initSocket };
+const emit = {
+  newMessage: (message, callback) => socket.emit('newMessage', message, callback),
+  newChannel: (channel, callback) => socket.emit('newChannel', channel, callback),
+  renameChannel: (renamedChannel, callback) => socket.emit('renameChannel', renamedChannel, callback),
+  removeChannel: (removedChannel, callback) => socket.emit('removeChannel', removedChannel, callback),
+};
+
+export { initSocket, emit };

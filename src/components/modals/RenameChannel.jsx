@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
 import getSchema from './getValidationSchema.js';
-import { socket } from '../../socket.js';
+import { emit } from '../../socket.js';
 
 const RenameChannel = (props) => {
   const { t } = useTranslation();
@@ -39,7 +39,8 @@ const RenameChannel = (props) => {
 
   const handleSubmit = (values) => {
     setIsSubmitDisabled(true);
-    socket.emit('renameChannel', { id: modalInfo.extra.channelId, name: values.name }, () => {
+    const renamedChannel = { id: modalInfo.extra.channelId, name: values.name };
+    emit.renameChannel(renamedChannel, () => {
       setIsSubmitDisabled(false);
       hideModal();
       toast(t('chat.toasts.channelRenamed'));

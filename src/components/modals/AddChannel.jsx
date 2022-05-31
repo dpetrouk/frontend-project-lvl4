@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
 import getSchema from './getValidationSchema.js';
-import { socket } from '../../socket.js';
+import { emit } from '../../socket.js';
 
 const AddChannel = (props) => {
   const { t } = useTranslation();
@@ -34,7 +34,8 @@ const AddChannel = (props) => {
 
   const handleSubmit = (values) => {
     setIsSubmitDisabled(true);
-    socket.emit('newChannel', { name: values.name }, (response) => {
+    const channel = { name: values.name };
+    emit.newChannel(channel, (response) => {
       setIsSubmitDisabled(false);
       selectChannel(response.data.id);
       hideModal();
