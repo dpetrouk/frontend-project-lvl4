@@ -23,6 +23,22 @@ const Login = () => {
   const history = useHistory();
   const [authFailed, setAuthFailed] = useState(false);
 
+  const handleSubmit = async (values) => {
+    try {
+      const { data } = await axios.post(routes.loginPath(), values);
+      const { token, username } = data;
+      auth.logIn(token, username);
+      history.push('/');
+    } catch (error) {
+      if (!error.response) {
+        toast(t('loginForm.toasts.connectionError'));
+      }
+      if (error.response.status === 401) {
+        setAuthFailed(true);
+      }
+    }
+  };
+
   const validate = async (values) => {
     const errors = {};
     setAuthFailed(false);
@@ -35,6 +51,7 @@ const Login = () => {
   };
 
   const f = useFormik({
+    onSubmit: handleSubmit,
     initialValues: {
       username: '',
       password: '',
@@ -42,21 +59,6 @@ const Login = () => {
     validate,
     validateOnChange: false,
     validateOnBlur: false,
-    onSubmit: async (values) => {
-      try {
-        const { data } = await axios.post(routes.loginPath(), values);
-        const { token, username } = data;
-        auth.logIn(token, username);
-        history.push('/');
-      } catch (error) {
-        if (!error.response) {
-          toast(t('loginForm.toasts.connectionError'));
-        }
-        if (error.response.status === 401) {
-          setAuthFailed(true);
-        }
-      }
-    },
   });
 
   return (
