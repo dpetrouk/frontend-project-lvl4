@@ -11,13 +11,7 @@ import { useTranslation } from 'react-i18next';
 import routes from '../routes.js';
 import useAuth from '../hooks/index.jsx';
 
-const Signup = () => {
-  const { t } = useTranslation();
-  const history = useHistory();
-  const auth = useAuth();
-
-  const [isInvalid, setIsInvalid] = useState(false);
-
+const getValidationSchema = () => {
   yup.setLocale({
     mixed: {
       required: 'signupForm.errors.required',
@@ -32,11 +26,21 @@ const Signup = () => {
     },
   });
 
-  const validationSchema = yup.object({
+  return yup.object({
     username: yup.string().required().min(3).max(20),
     password: yup.string().required().min(6),
     passwordConfirmation: yup.string().oneOf([yup.ref('password')]),
   });
+};
+
+const Signup = () => {
+  const { t } = useTranslation();
+  const history = useHistory();
+  const auth = useAuth();
+
+  const [isInvalid, setIsInvalid] = useState(false);
+
+  const validationSchema = getValidationSchema();
 
   const handleSubmit = async (values) => {
     try {
