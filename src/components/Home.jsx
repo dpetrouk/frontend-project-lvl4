@@ -8,8 +8,15 @@ import cn from 'classnames';
 
 import { emit } from '../socket.js';
 import useAuth from '../hooks/index.jsx';
-import { fetchInitialState, setCurrentChannel } from '../slices/channelsInfoSlice.js';
-import { openModal, closeModal } from '../slices/modalSlice.js';
+import {
+  fetchInitialState,
+  setCurrentChannel,
+  selectChannels,
+  selectCurrentChannelId,
+  selectCurrentChannel,
+} from '../slices/channelsInfoSlice.js';
+import { selectCurrentChannelMessages } from '../slices/messagesInfoSlice.js';
+import { openModal, closeModal, selectModalInfo } from '../slices/modalSlice.js';
 import getModal from './modals/index.js';
 import { profanityFilter } from '../profanityFilter.js';
 
@@ -167,16 +174,13 @@ const Home = () => {
     dispatch(fetchInitialState(token));
   }, []);
 
-  const currentChannelId = useSelector((state) => state.channelsInfo.currentChannelId);
-  const channels = useSelector((state) => state.channelsInfo.channels);
-  const messages = useSelector((state) => state.messagesInfo.messages);
-  console.log({ channels, messages });
-
-  const currentChannel = channels.find(({ id }) => id === currentChannelId);
-  const currentChannelMessages = messages.filter(({ channelId }) => channelId === currentChannelId);
+  const channels = useSelector(selectChannels);
+  const currentChannelId = useSelector(selectCurrentChannelId);
+  const currentChannel = useSelector(selectCurrentChannel);
+  const currentChannelMessages = useSelector(selectCurrentChannelMessages);
 
   console.log({
-    username, channels, currentChannel, currentChannelMessages, messages,
+    username, channels, currentChannel, currentChannelMessages,
   });
 
   const [isSendDisabled, setIsSendDisabled] = useState(true);
@@ -191,7 +195,7 @@ const Home = () => {
     });
   };
 
-  const modalInfo = useSelector((state) => state.modal);
+  const modalInfo = useSelector(selectModalInfo);
   const hideModal = () => dispatch(closeModal());
   const showModal = (type, extra = null) => dispatch(openModal({ type, extra }));
 

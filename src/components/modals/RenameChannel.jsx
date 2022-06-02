@@ -5,6 +5,7 @@ import { Modal, Form, Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
+import { generateChannelByIdSelector } from '../../slices/channelsInfoSlice.js';
 import getSchema from './getValidationSchema.js';
 import { emit } from '../../socket.js';
 
@@ -12,8 +13,7 @@ const RenameChannel = (props) => {
   const { t } = useTranslation();
   const { hideModal, modalInfo } = props;
   const { channelId } = modalInfo.extra;
-  const channels = useSelector((state) => state.channelsInfo.channels);
-  const channel = channels.find(({ id }) => id === channelId);
+  const channel = useSelector(generateChannelByIdSelector(channelId));
 
   const [isInvalid, setIsInvalid] = useState(false);
   const [isSubmitDisabled, setIsSubmitDisabled] = useState(false);

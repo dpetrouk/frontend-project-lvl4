@@ -7,7 +7,7 @@ const initialState = {
   messages: [],
 };
 
-export const messagesSlice = createSlice({
+const messagesSlice = createSlice({
   name: 'messagesInfo',
   initialState,
   reducers: {
@@ -26,6 +26,17 @@ export const messagesSlice = createSlice({
       });
   },
 });
+
+const selectCurrentChannelMessages = (state) => {
+  console.log('messagesInfoSelectors.currentChannelMessages');
+  const { messages }= state.messagesInfo;
+  const { currentChannelId } = state.channelsInfo;
+  return messages.filter(({ channelId }) => channelId === currentChannelId);
+};
+
+export { messagesSlice };
+
+export { selectCurrentChannelMessages };
 
 export const { addMessage } = messagesSlice.actions;
 

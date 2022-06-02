@@ -21,7 +21,7 @@ const initialState = {
   currentChannelId: defaultChannelId,
 };
 
-export const channelsInfoSlice = createSlice({
+const channelsInfoSlice = createSlice({
   name: 'channelsInfo',
   initialState,
   reducers: {
@@ -57,10 +57,25 @@ export const channelsInfoSlice = createSlice({
   },
 });
 
+const selectChannels = (state) => state.channelsInfo.channels;
+const selectCurrentChannelId = (state) => state.channelsInfo.currentChannelId;
+const selectCurrentChannel = (state) => {
+  console.log('channelsInfoSelectors.currentChannel');
+  const channels = selectChannels(state);
+  const currentChannelId = selectCurrentChannelId(state);
+  return channels.find(({ id }) => id === currentChannelId)
+};
+const generateChannelByIdSelector = (channelId) => (state) => {
+  const channels = selectChannels(state);
+  return channels.find(({ id }) => id === channelId);
+};
+
+export { channelsInfoSlice, fetchInitialState };
+
+export { selectChannels, selectCurrentChannelId, selectCurrentChannel, generateChannelByIdSelector };
+
 export const {
   setCurrentChannel, addChannel, renameChannel, removeChannel,
 } = channelsInfoSlice.actions;
-
-export { fetchInitialState };
 
 export default channelsInfoSlice.reducer;
