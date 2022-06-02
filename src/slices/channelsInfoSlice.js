@@ -64,10 +64,6 @@ const selectCurrentChannel = createSelector(
   selectCurrentChannelId,
   (channels, currentChannelId) => channels.find(({ id }) => id === currentChannelId),
 );
-const generateChannelByIdSelector = (channelId) => (state) => {
-  const channels = selectChannels(state);
-  return channels.find(({ id }) => id === channelId);
-};
 
 const selectChannelById = createSelector(
   [
@@ -83,7 +79,7 @@ export {
   selectChannels,
   selectCurrentChannelId,
   selectCurrentChannel,
-  generateChannelByIdSelector,
+  selectChannelById,
 };
 
 export const {
