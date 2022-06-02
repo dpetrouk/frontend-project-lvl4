@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, createSelector } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 import routes from '../routes.js';
@@ -59,15 +59,23 @@ const channelsInfoSlice = createSlice({
 
 const selectChannels = (state) => state.channelsInfo.channels;
 const selectCurrentChannelId = (state) => state.channelsInfo.currentChannelId;
-const selectCurrentChannel = (state) => {
-  const channels = selectChannels(state);
-  const currentChannelId = selectCurrentChannelId(state);
-  return channels.find(({ id }) => id === currentChannelId)
-};
+const selectCurrentChannel = createSelector(
+  selectChannels,
+  selectCurrentChannelId,
+  (channels, currentChannelId) => channels.find(({ id }) => id === currentChannelId)
+);
 const generateChannelByIdSelector = (channelId) => (state) => {
   const channels = selectChannels(state);
   return channels.find(({ id }) => id === channelId);
 };
+
+const selectChannelById = createSelector(
+  [
+    selectChannels,
+    (state, channelId) => channelId,
+  ],
+  (channels, channelId) => channels.find(({ id }) => id === channelId)
+);
 
 export { channelsInfoSlice, fetchInitialState };
 

@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 
-import { createSlice } from '@reduxjs/toolkit';
-import { fetchInitialState, removeChannel } from './channelsInfoSlice.js';
+import { createSlice, createSelector } from '@reduxjs/toolkit';
+import { fetchInitialState, removeChannel, selectCurrentChannelId } from './channelsInfoSlice.js';
 
 const initialState = {
   messages: [],
@@ -27,11 +27,13 @@ const messagesSlice = createSlice({
   },
 });
 
-const selectCurrentChannelMessages = (state) => {
-  const { messages }= state.messagesInfo;
-  const { currentChannelId } = state.channelsInfo;
-  return messages.filter(({ channelId }) => channelId === currentChannelId);
-};
+const selectMessages = (state) => state.messagesInfo.messages;
+
+const selectCurrentChannelMessages = createSelector(
+  selectMessages,
+  selectCurrentChannelId,
+  (messages, currentChannelId) => messages.filter(({ channelId }) => channelId === currentChannelId)
+);
 
 export { messagesSlice };
 
