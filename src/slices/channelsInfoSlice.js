@@ -62,7 +62,7 @@ const selectCurrentChannelId = (state) => state.channelsInfo.currentChannelId;
 const selectCurrentChannel = createSelector(
   selectChannels,
   selectCurrentChannelId,
-  (channels, currentChannelId) => channels.find(({ id }) => id === currentChannelId)
+  (channels, currentChannelId) => channels.find(({ id }) => id === currentChannelId),
 );
 const generateChannelByIdSelector = (channelId) => (state) => {
   const channels = selectChannels(state);
@@ -74,12 +74,17 @@ const selectChannelById = createSelector(
     selectChannels,
     (state, channelId) => channelId,
   ],
-  (channels, channelId) => channels.find(({ id }) => id === channelId)
+  (channels, channelId) => channels.find(({ id }) => id === channelId),
 );
 
 export { channelsInfoSlice, fetchInitialState };
 
-export { selectChannels, selectCurrentChannelId, selectCurrentChannel, generateChannelByIdSelector };
+export {
+  selectChannels,
+  selectCurrentChannelId,
+  selectCurrentChannel,
+  generateChannelByIdSelector,
+};
 
 export const {
   setCurrentChannel, addChannel, renameChannel, removeChannel,

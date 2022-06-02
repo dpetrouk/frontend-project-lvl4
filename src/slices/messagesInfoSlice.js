@@ -32,7 +32,7 @@ const selectMessages = (state) => state.messagesInfo.messages;
 const selectCurrentChannelMessages = createSelector(
   selectMessages,
   selectCurrentChannelId,
-  (messages, currentChannelId) => messages.filter(({ channelId }) => channelId === currentChannelId)
+  (messages, currentChannelId) => messages.filter(({ channelId }) => channelId === currentChannelId),
 );
 
 export { messagesSlice };

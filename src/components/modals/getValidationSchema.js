@@ -24,7 +24,7 @@ const getSchema = () => {
     .required()
     .min(3)
     .max(20)
-    .notOneOf(getChannelNames())
-  };
+    .notOneOf(getChannelNames());
+};
 
 export default getSchema;
