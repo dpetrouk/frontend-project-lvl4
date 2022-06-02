@@ -17,8 +17,12 @@ const init = (socketClient) => {
     localStorage.debug = 'chat:*';
   }
 
+  if (!process.env.ROLLBAR_ACCESS_TOKEN) {
+    console.log('No ROLLBAR_ACCESS_TOKEN');
+  }
+
   const rollbarConfig = {
-    accessToken: process.env.ROLLBAR_ACCESS_TOKEN,
+    accessToken: process.env.ROLLBAR_ACCESS_TOKEN || 'no token',
     environment: process.env.NODE_ENV,
   };
 
