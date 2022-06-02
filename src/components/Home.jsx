@@ -145,7 +145,6 @@ const Modal = ({ modalInfo, hideModal, selectChannel }) => {
   if (!modalInfo.isOpened) {
     return null;
   }
-  console.log({ modalInfo });
 
   const Component = getModal(modalInfo.type);
   return (
@@ -158,7 +157,6 @@ const Modal = ({ modalInfo, hideModal, selectChannel }) => {
 };
 
 const Home = () => {
-  console.log('Home');
   const { t } = useTranslation();
   const { token, username } = useAuth();
 
@@ -178,10 +176,6 @@ const Home = () => {
   const currentChannelId = useSelector(selectCurrentChannelId);
   const currentChannel = useSelector(selectCurrentChannel);
   const currentChannelMessages = useSelector(selectCurrentChannelMessages);
-
-  console.log({
-    username, channels, currentChannel, currentChannelMessages,
-  });
 
   const [isSendDisabled, setIsSendDisabled] = useState(true);
 

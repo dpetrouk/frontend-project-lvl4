@@ -60,7 +60,6 @@ const channelsInfoSlice = createSlice({
 const selectChannels = (state) => state.channelsInfo.channels;
 const selectCurrentChannelId = (state) => state.channelsInfo.currentChannelId;
 const selectCurrentChannel = (state) => {
-  console.log('channelsInfoSelectors.currentChannel');
   const channels = selectChannels(state);
   const currentChannelId = selectCurrentChannelId(state);
   return channels.find(({ id }) => id === currentChannelId)

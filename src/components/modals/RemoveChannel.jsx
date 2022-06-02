@@ -6,7 +6,6 @@ import { toast } from 'react-toastify';
 import { emit } from '../../socket.js';
 
 const RemoveChannel = (props) => {
-  console.log('removing channel');
   const { t } = useTranslation();
   const { hideModal, modalInfo } = props;
   const [isSubmitDisabled, setIsSubmitDisabled] = useState(false);

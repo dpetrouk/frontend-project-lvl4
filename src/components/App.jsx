@@ -18,7 +18,6 @@ import Home from './Home.jsx';
 import NoMatch from './NoMatch.jsx';
 
 const LoginVerification = () => {
-  console.log('LoginVerification');
   const auth = useAuth();
   if (auth.loggedIn) {
     return <Redirect to="/" />;
@@ -28,7 +27,7 @@ const LoginVerification = () => {
 
 const PrivateRoute = ({ children, path }) => {
   const auth = useAuth();
-  console.log('PrivateRoute');
+
   return (
     <Route
       path={path}
@@ -49,7 +48,6 @@ const AuthButton = () => {
 };
 
 const App = () => {
-  console.log('App');
   const { t } = useTranslation();
 
   return (
