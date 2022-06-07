@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useHistory, Link } from 'react-router-dom';
 import {
   Container, Row, Col, Card, Form, Button,
@@ -22,6 +22,11 @@ const Login = () => {
   const auth = useAuth();
   const history = useHistory();
   const [authFailed, setAuthFailed] = useState(false);
+  const usernameInputRef = useRef(null);
+
+  useEffect(() => {
+    usernameInputRef.current.select();
+  }, []);
 
   const handleSubmit = async (values) => {
     try {
@@ -47,6 +52,7 @@ const Login = () => {
         errors[err.path] = err.message;
         setAuthFailed(true);
       });
+    usernameInputRef.current.select();
     return errors;
   };
 
@@ -79,7 +85,7 @@ const Login = () => {
                     isInvalid={authFailed}
                     onChange={f.handleChange}
                     value={f.values.username}
-                    autoFocus
+                    ref={usernameInputRef}
                   />
                   <Form.Label htmlFor="username">
                     {t('loginForm.username')}

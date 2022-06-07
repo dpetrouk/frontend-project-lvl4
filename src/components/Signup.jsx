@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useFormik } from 'formik';
 import {
@@ -40,6 +40,12 @@ const Signup = () => {
 
   const [isInvalid, setIsInvalid] = useState(false);
 
+  const usernameInputRef = useRef(null);
+
+  useEffect(() => {
+    usernameInputRef.current.select();
+  }, []);
+
   const validationSchema = getValidationSchema();
 
   const handleSubmit = async (values) => {
@@ -52,6 +58,7 @@ const Signup = () => {
         const { status } = error.response;
         if (status === 409) {
           setIsInvalid(true);
+          usernameInputRef.current.select();
         }
       }
     }
@@ -87,7 +94,7 @@ const Signup = () => {
                     onBlur={f.handleBlur}
                     onChange={f.handleChange}
                     value={f.values.username}
-                    autoFocus
+                    ref={usernameInputRef}
                   />
                   <Form.Label htmlFor="username">
                     {t('signupForm.username')}
