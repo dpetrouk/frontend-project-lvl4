@@ -170,7 +170,7 @@ const Home = () => {
 
   useEffect(() => {
     dispatch(fetchInitialState(token));
-  }, []);
+  }, [dispatch, token]);
 
   const channels = useSelector(selectChannels);
   const currentChannelId = useSelector(selectCurrentChannelId);
