@@ -1,6 +1,4 @@
-// @ts-check
-import ReactDOM from 'react-dom';
-import { io as socketClient } from 'socket.io-client';
+import './assets/application.scss';
 
 import ReactDOM from 'react-dom/client';
 import { io as socketClient } from 'socket.io-client';
