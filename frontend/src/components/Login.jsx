@@ -12,6 +12,8 @@ import * as yup from 'yup';
 import routes from '../routes.js';
 import useAuth from '../hooks/index.jsx';
 
+import froge from '../assets/froge.png';
+
 const validationSchema = yup.object().shape({
   username: yup.string().trim().required(),
   password: yup.string().required(),
@@ -72,7 +74,10 @@ const Login = () => {
       <Row className="justify-content-center align-content-center h-100">
         <Col xs={12} md={8} xxl={6}>
           <Card>
-            <Card.Body className="p-5">
+            <Card.Body className="p-5 row">
+              <div className="col-12 col-md-6 d-flex align-items-center justify-content-center">
+                <img className="img-fluid" src={froge} alt="froge is one who eats buge" title="froge is one who eats buge" />
+              </div>
               <Form noValidate onSubmit={f.handleSubmit} className="col-md-6 mt-3 mb-0">
                 <h2 className="text-center mb-4">{t('loginForm.header')}</h2>
                 <Form.Group className="form-floating mb-4">

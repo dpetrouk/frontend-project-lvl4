@@ -11,6 +11,8 @@ import { useTranslation } from 'react-i18next';
 import routes from '../routes.js';
 import useAuth from '../hooks/index.jsx';
 
+import kote from '../assets/kote.png';
+
 const getValidationSchema = () => {
   yup.setLocale({
     mixed: {
@@ -80,7 +82,7 @@ const Signup = () => {
       <Row className="justify-content-center align-content-center h-100">
         <Col xs={12} md={8} xxl={6}>
           <Card>
-            <Card.Body className="p-5">
+            <Card.Body className="p-5 row">
               <Form noValidate onSubmit={f.handleSubmit} className="col-md-6 mt-3 mb-0">
                 <h2 className="text-center mb-4">{t('signupForm.header')}</h2>
                 <Form.Group className="form-floating mb-4">
@@ -141,6 +143,9 @@ const Signup = () => {
                 </Form.Group>
                 <Button variant="outline-primary" type="submit" className="w-100 mb-3">{t('signupForm.submit')}</Button>
               </Form>
+              <div className="col-12 col-md-6 d-flex align-items-center justify-content-center">
+                <img className="img-fluid" src={kote} alt="я тут просто полежу, не обращайте внимания" title="я тут просто полежу, не обращайте внимания" />
+              </div>
             </Card.Body>
           </Card>
         </Col>
